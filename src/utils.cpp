@@ -17,7 +17,7 @@ string Utils::sha256(const string str) {
     return ss.str();
 }
 
-RSA *Utils::gen_rsa_keys() {
+RSA *Utils::generate_rsa_keys() {
     size_t bits = 2048;
     size_t exponents = 65537;
     RSA *keypair = RSA_generate_key(bits, exponents, NULL, NULL);
@@ -36,15 +36,29 @@ char *Utils::rsa_decrypt(const char *msg, RSA *keypair) {
     return result != -1 ? (char *)out_buf : NULL;
 }
 
-void Utils::export_public_key(const RSA *keypair, string file_path) {
+void Utils::export_public_key(const RSA *keypair, const string file_path) {
     BIO *file = BIO_new_file((file_path + "public.pem").c_str(), "w+");
     PEM_write_bio_RSAPublicKey(file, keypair);
     BIO_free(file);
 }
 
-void Utils::export_private_key(const RSA *keypair, string file_path) {
+void Utils::export_private_key(const RSA *keypair, const string file_path) {
     BIO *file = BIO_new_file((file_path + "private.pem").c_str(), "w+");
     PEM_write_bio_RSAPrivateKey(file, keypair, NULL, NULL, 0, NULL, NULL);
     BIO_free(file);
+}
+
+RSA *Utils::import_public_key(const string file_path) {
+    RSA *keypair = NULL;
+    BIO *file = BIO_new_file((file_path + "public.pem").c_str(), "rt");
+    PEM_read_bio_RSAPublicKey(file, &keypair, NULL, NULL);
+    return keypair;
+}
+
+RSA *Utils::import_private_key(const string file_path) {
+    RSA *keypair = NULL;
+    BIO *file = BIO_new_file((file_path + "private.pem").c_str(), "rt");
+    PEM_read_bio_RSAPrivateKey(file, &keypair, NULL, NULL);
+    return keypair;
 }
 #pragma GCC diagnostic pop
