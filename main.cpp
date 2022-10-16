@@ -5,11 +5,7 @@
 int main(int argc, char **argv) {
     using namespace std;
     RSA *keypair = Utils::gen_rsa_keys();
-    char *text = (char *)"Hello World!, new message";
-    char *encrypted_text = Utils::rsa_encrypt(text, keypair);
-    string encrypt = string{encrypted_text};
-    cout << encrypted_text << endl;
-    char *decrypted_text = Utils::rsa_decrypt(encrypted_text, keypair);
-    cout << decrypted_text << endl;
+    Utils::export_private_key(keypair);
+    Utils::export_public_key(keypair);
     return 0;
 }
