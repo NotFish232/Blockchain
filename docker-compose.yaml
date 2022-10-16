@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  blockchain_service:
+    build: .
+    image: blockchain_img:v1
+    volumes:
+    - ./:/Blockchain
+    ports:
+      - "8080:8080"
+

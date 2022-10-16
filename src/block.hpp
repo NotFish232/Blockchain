@@ -1,7 +1,6 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 #include <iostream>
-#include <jsoncpp/json/json.h>
 
 using namespace std;
 
