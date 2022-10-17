@@ -4,22 +4,15 @@
 
 int main(int argc, char **argv) {
     using namespace std;
-    RSA *keypair = Utils::generate_rsa_keys();
-    Utils::export_public_key(keypair);
-    Utils::export_private_key(keypair);
     RSA *private_key = Utils::import_private_key();
     RSA *public_key = Utils::import_public_key();
     string msg = "random message";
-    char *signature = Utils::sign_message(msg, private_key);
-    cout << signature << endl;
-    if (Utils::verify_signature(msg, signature, public_key)) {
-        cout << "Authentic" << endl;
-    } else {
-        cout << "not authentic" << endl;
-    }
+    char *encrypted_message = Utils::rsa_encrypt(msg.c_str(), public_key);
+    cout << encrypted_message << endl;
+    char *decrypted_message = Utils::rsa_decrypt(encrypted_message, private_key);
+    cout << decrypted_message << endl;
     RSA_free(public_key);
     RSA_free(private_key);
-    delete signature;
     return 0;
 
     /*RSA *keypair = Utils::generate_rsa_keys();
