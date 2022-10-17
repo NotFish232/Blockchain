@@ -1,3 +1,4 @@
 #!/bin/sh
-g++ -o ./bin/run.out ./src/*.cpp main.cpp  -lcrypto
+chmod +x compile.sh
+sh compile.sh
 ./bin/run.out
