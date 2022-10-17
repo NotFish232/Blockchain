@@ -19,7 +19,7 @@ string Utils::sha256(const string str) {
 }
 
 RSA *Utils::generate_rsa_keys() {
-    size_t bits = 4096;
+    size_t bits = 2048;
     size_t exponents = 65537;
     RSA *keypair = RSA_generate_key(bits, exponents, NULL, NULL);
     return RSA_check_key(keypair) == 1 ? keypair : NULL;
