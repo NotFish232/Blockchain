@@ -9,9 +9,9 @@
 class Utils {
 private:
     static char *base64_encode(const uchar *msg, size_t length);
-    static uchar *base64_decode(const char *msg, size_t *length_ptr);
-    static size_t calculate_base64_length(const char *base64_input);
-    static uchar *rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len, RSA *private_key);
+    static uchar *base64_decode(const char *b64_msg, size_t *length_ptr);
+    static size_t calculate_base64_length(const char *b64_input);
+    static uchar *rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *private_key);
     static bool rsa_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *public_key);
 
 public:

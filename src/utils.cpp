@@ -64,7 +64,7 @@ RSA *Utils::import_private_key(const string file_path) {
     BIO_free(file);
     return private_key;
 }
-uchar *Utils::rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len, RSA *rsa) {
+uchar *Utils::rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *rsa) {
     EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
     EVP_PKEY *priKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(priKey, rsa);
@@ -74,11 +74,11 @@ uchar *Utils::rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len, RS
     if (EVP_DigestSignUpdate(m_RSASignCtx, msg, msg_len) <= 0) {
         return NULL;
     }
-    if (EVP_DigestSignFinal(m_RSASignCtx, NULL, enc_msg_len) <= 0) {
+    if (EVP_DigestSignFinal(m_RSASignCtx, NULL, enc_msg_len_ptr) <= 0) {
         return NULL;
     }
-    uchar *enc_msg = new uchar[*enc_msg_len];
-    if (EVP_DigestSignFinal(m_RSASignCtx, enc_msg, enc_msg_len) <= 0) {
+    uchar *enc_msg = new uchar[*enc_msg_len_ptr];
+    if (EVP_DigestSignFinal(m_RSASignCtx, enc_msg, enc_msg_len_ptr) <= 0) {
         return NULL;
     }
     EVP_MD_CTX_free(m_RSASignCtx);
@@ -117,26 +117,26 @@ char *Utils::base64_encode(const uchar *buffer, size_t length) {
     return buffer_ptr->data;
 }
 
-size_t Utils::calculate_base64_length(const char *base64_input) {
-    size_t len = strlen(base64_input), padding = 0;
-    if (base64_input[len - 1] == '=') {
-        padding = base64_input[len - 2] == '=' ? 2 : 1;
+size_t Utils::calculate_base64_length(const char *b64_input) {
+    size_t len = strlen(b64_input), padding = 0;
+    if (b64_input[len - 1] == '=') {
+        padding = b64_input[len - 2] == '=' ? 2 : 1;
     }
     return (3 * len) / 4 - padding;
 }
 
-uchar *Utils::base64_decode(const char *b64message, size_t *length_ptr) {
+uchar *Utils::base64_decode(const char *b64_msg, size_t *length_ptr) {
     BIO *bio, *b64;
 
-    int decode_len = Utils::calculate_base64_length(b64message);
+    int decode_len = Utils::calculate_base64_length(b64_msg);
     uchar *buffer = new uchar[decode_len + 1];
     buffer[decode_len] = '\0';
 
-    bio = BIO_new_mem_buf(b64message, -1);
+    bio = BIO_new_mem_buf(b64_msg, -1);
     b64 = BIO_new(BIO_f_base64());
     bio = BIO_push(b64, bio);
 
-    *length_ptr = BIO_read(bio, buffer, strlen(b64message));
+    *length_ptr = BIO_read(bio, buffer, strlen(b64_msg));
     BIO_free_all(bio);
     return buffer;
 }
