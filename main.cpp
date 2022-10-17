@@ -4,6 +4,9 @@
 
 int main(int argc, char **argv) {
     using namespace std;
+    RSA *keypair = Utils::generate_rsa_keys();
+    Utils::export_public_key(keypair);
+    Utils::export_private_key(keypair);
     RSA *private_key = Utils::import_private_key();
     RSA *public_key = Utils::import_public_key();
     string msg = "random message";
