@@ -37,29 +37,29 @@ char *Utils::rsa_decrypt(const char *msg, RSA *private_key) {
     return result != -1 ? (char *)out_buf : NULL;
 }
 
-void Utils::export_public_key(const RSA *public_key, const string file_path) {
-    BIO *file = BIO_new_file((file_path + "public.pem").c_str(), "w+");
+void Utils::export_public_key(const RSA *public_key, const string file_path, const string file_name) {
+    BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     PEM_write_bio_RSAPublicKey(file, public_key);
     BIO_free(file);
 }
 
-void Utils::export_private_key(const RSA *private_key, const string file_path) {
-    BIO *file = BIO_new_file((file_path + "private.pem").c_str(), "w+");
+void Utils::export_private_key(const RSA *private_key, const string file_path, const string file_name) {
+    BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     PEM_write_bio_RSAPrivateKey(file, private_key, NULL, NULL, 0, NULL, NULL);
     BIO_free(file);
 }
 
-RSA *Utils::import_public_key(const string file_path) {
+RSA *Utils::import_public_key(const string file_path, const string file_name) {
     RSA *public_key = NULL;
-    BIO *file = BIO_new_file((file_path + "public.pem").c_str(), "rt");
+    BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPublicKey(file, &public_key, NULL, NULL);
     BIO_free(file);
     return public_key;
 }
 
-RSA *Utils::import_private_key(const string file_path) {
+RSA *Utils::import_private_key(const string file_path, const string file_name) {
     RSA *private_key = NULL;
-    BIO *file = BIO_new_file((file_path + "private.pem").c_str(), "rt");
+    BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPrivateKey(file, &private_key, NULL, NULL);
     BIO_free(file);
     return private_key;

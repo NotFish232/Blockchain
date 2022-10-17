@@ -19,10 +19,10 @@ public:
     static RSA *generate_rsa_keys();
     static char *rsa_encrypt(const char *msg, RSA *public_key);
     static char *rsa_decrypt(const char *msg, RSA *private_key);
-    static void export_public_key(const RSA *public_key, const std::string file_path = "./keys/");
-    static void export_private_key(const RSA *private_key, const std::string file_path = "./keys/");
-    static RSA *import_public_key(const std::string file_path = "./keys/");
-    static RSA *import_private_key(const std::string file_path = "./keys/");
+    static void export_public_key(const RSA *public_key, const std::string file_path = "./keys/", const std::string file_name = "public");
+    static void export_private_key(const RSA *private_key, const std::string file_path = "./keys/", const std::string file_name = "private");
+    static RSA *import_public_key(const std::string file_path = "./keys/", const std::string file_name = "public");
+    static RSA *import_private_key(const std::string file_path = "./keys/", const std::string file_name = "private");
     static char *sign_message(const std::string msg, RSA *private_key);
     static bool verify_signature(const std::string msg, const char *signature, RSA *pulic_key);
 };
