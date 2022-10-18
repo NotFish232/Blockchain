@@ -1,19 +1,21 @@
 #ifndef BLOCK_H
 #define BLOCK_H
+
 #include "crypto.hpp"
 #include <iostream>
-
-using namespace std;
+#include <jsoncpp/json/json.h>
 
 class Block {
 private:
     Block *last_block;
     RSA *key_pair;
-    string hash;
+    std::string hash;
 
 public:
     Block();
     ~Block();
-    string get_hash();
+    std::string get_hash();
+    Json::Value to_json();
 };
+
 #endif

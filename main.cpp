@@ -6,9 +6,9 @@ int main(int argc, char **argv) {
     using namespace std;
     RSA *keypair;
     for (int i = 0; i <= 10; ++i) {
-        keypair = Crypto::generate_rsa_keys();
-        Crypto::export_private_key(keypair, "./keys/", "user" + to_string(i) + "_private");
-        Crypto::export_public_key(keypair, "./keys/", "user" + to_string(i) + "_public");
+        keypair = generate_rsa_keys();
+        export_private_key(keypair, "./keys/", "user" + to_string(i) + "_private");
+        export_public_key(keypair, "./keys/", "user" + to_string(i) + "_public");
     }
     RSA_free(keypair);
     
