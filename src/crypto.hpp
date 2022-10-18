@@ -6,7 +6,7 @@
 #include <openssl/sha.h>
 #define uchar unsigned char
 
-class Utils {
+class Crypto {
 private:
     static char *base64_encode(const uchar *msg, size_t length);
     static uchar *base64_decode(const char *b64_msg, size_t *length_ptr);

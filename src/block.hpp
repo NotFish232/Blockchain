@@ -1,6 +1,6 @@
 #ifndef BLOCK_H
 #define BLOCK_H
-#include "utils.hpp"
+#include "crypto.hpp"
 #include <iostream>
 
 using namespace std;
