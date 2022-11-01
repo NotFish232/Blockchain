@@ -19,14 +19,18 @@ class Network {
 private:
     server _server;
     client _client;
-    void on_message(websocketpp::connection_hdl hdl, msg_ptr msg);
     void on_open(websocketpp::connection_hdl hdl);
-    void on_fail(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);
+    void on_fail(websocketpp::connection_hdl hdl);
+    void on_message(websocketpp::connection_hdl hdl, msg_ptr msg);
+    void config_server(std::string port);
+    void config_client(std::string url);
 
 public:
     // port to listen on, url to communicate with
     Network(std::string port, std::string url);
+    ~Network();
+    void run();
     void send(std::string msg);
 };
 
