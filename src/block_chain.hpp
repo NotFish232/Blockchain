@@ -1,5 +1,6 @@
 #ifndef BLOCKCHAIN_H
 #define BLOCKCHAIN_H
+
 #include "block.hpp"
 #include <iostream>
 #include <vector>

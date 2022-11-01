@@ -3,7 +3,6 @@
 
 #include "crypto.hpp"
 #include <iostream>
-#include <jsoncpp/json/json.h>
 
 class Block {
 private:
@@ -15,7 +14,6 @@ public:
     Block();
     ~Block();
     std::string get_hash();
-    Json::Value to_json();
 };
 
 #endif

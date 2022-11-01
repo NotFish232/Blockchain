@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 chmod +x compile.sh
-sh compile.sh
+./compile.sh
 ./bin/run.out

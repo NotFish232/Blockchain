@@ -1,6 +1,6 @@
 FROM ubuntu:latest
-RUN apt update && apt upgrade && apt-get install -y g++ libssl-dev
+RUN apt -y update && apt -y upgrade && apt-get -y install g++ libssl-dev libasio-dev libwebsocketpp-dev
 RUN mkdir Blockchain
 WORKDIR /Blockchain
 EXPOSE 8080
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]
