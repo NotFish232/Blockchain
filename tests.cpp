@@ -23,8 +23,8 @@ using namespace std;
 int main(int argc, char **argv) {
     cout << "Running test suite...\n";
     int passing_tests = 0, total_tests = 0;
-    char *msg = "this message is going to be encoded";
-    string s_msg = string{msg};
+    const char *msg = "this message is going to be encoded";
+    const string s_msg = string{msg};
 
     assert(Utils::sha256(s_msg) == Utils::sha256(s_msg));
 
@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 
     char *encrypted_msg = Utils::rsa_encrypt(msg, public_key);
     char *decrypted_msg = Utils::rsa_decrypt(encrypted_msg, private_key);
-    assert(s_msg == string{decrypted_msg});
+    assert(strcmp(msg, decrypted_msg) == 0);
 
     delete[] encrypted_msg, decrypted_msg;
     char *signed_msg = Utils::sign_message(msg, private_key);

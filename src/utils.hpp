@@ -9,15 +9,14 @@
 #define uchar unsigned char
 
 class Utils {
-private:
-    static char *base64_encode(const uchar *msg, size_t length);
-    static uchar *base64_decode(const char *b64_msg, size_t *length_ptr);
-    static size_t calculate_base64_length(const char *b64_input);
+public:
+    static std::string base64_encode(const std::string &input);
+    static std::string base64_decode(const std::string &input);
     static uchar *rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *private_key);
     static bool rsa_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *public_key);
-
+    static bool file_exists(std::string file_path, std::string file_name);
 public:
-    static std::string sha256(const std::string str);
+    static std::string sha256(const std::string &str);
     static void free(RSA *keypair);
     static RSA *generate_rsa_keys();
     static char *rsa_encrypt(const char *msg, RSA *public_key);
