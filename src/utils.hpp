@@ -13,8 +13,8 @@ private:
     static size_t calculate_base64_length(const char *input);
     static char *base64_encode(const uchar *input, size_t len);
     static uchar *base64_decode(const char *input, size_t *len_ptr);
-    static uchar *rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *private_key);
-    static bool rsa_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *public_key);
+    static uchar *_sign_message(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *private_key);
+    static bool _verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *public_key);
     static bool file_exists(std::string file_path, std::string file_name);
 
 public:
@@ -27,8 +27,8 @@ public:
     static int export_private_key(const RSA *private_key, const std::string file_path = "./keys/", const std::string file_name = "private");
     static RSA *import_public_key(const std::string file_path = "./keys/", const std::string file_name = "public");
     static RSA *import_private_key(const std::string file_path = "./keys/", const std::string file_name = "private");
-    static char *sign_message(const std::string &msg, RSA *private_key);
-    static bool verify_signature(const std::string &msg, const char *signature, RSA *pulic_key);
+    static std::string sign_message(const std::string &msg, RSA *private_key);
+    static bool verify_signature(const std::string &msg, const std::string &signature, RSA *pulic_key);
 };
 
 #endif

@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     assert(strcmp(msg, decrypted_msg) == 0);
 
     delete[] encrypted_msg, decrypted_msg;
-    char * signed_msg = Utils::sign_message(msg, private_key);
+    string signed_msg = Utils::sign_message(msg, private_key);
     assert(Utils::verify_signature(msg, signed_msg, public_key));
 
     assert(Utils::export_private_key(private_key, "./keys/", private_key_name));

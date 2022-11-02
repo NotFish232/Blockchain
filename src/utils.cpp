@@ -71,7 +71,7 @@ RSA *Utils::import_private_key(const string file_path, const string file_name) {
     BIO_free(file);
     return private_key;
 }
-uchar *Utils::rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *rsa) {
+uchar *Utils::_sign_message(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *rsa) {
     EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
     EVP_PKEY *priKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(priKey, rsa);
@@ -92,7 +92,7 @@ uchar *Utils::rsa_sign(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr
     return enc_msg;
 }
 
-bool Utils::rsa_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *rsa) {
+bool Utils::_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *rsa) {
     EVP_PKEY *pubKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pubKey, rsa);
     EVP_MD_CTX *m_RSAVerifyCtx = EVP_MD_CTX_create();
@@ -147,18 +147,18 @@ uchar *Utils::base64_decode(const char *b64_msg, size_t *length_ptr) {
     return buffer;
 }
 
-char *Utils::sign_message(const std::string &msg, RSA *private_key) {
+string Utils::sign_message(const std::string &msg, RSA *private_key) {
     size_t enc_msg_len;
-    uchar *enc_msg = Utils::rsa_sign((uchar *)msg.c_str(), msg.length(), &enc_msg_len, private_key);
+    uchar *enc_msg = Utils::_sign_message((uchar *)msg.c_str(), msg.length(), &enc_msg_len, private_key);
     char *base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
     delete enc_msg;
     return base64_msg;
 }
 
-bool Utils::verify_signature(const std::string &text, const char *signature, RSA *public_key) {
+bool Utils::verify_signature(const std::string &text, const string &signature, RSA *public_key) {
     size_t enc_msg_len;
-    uchar *enc_msg = Utils::base64_decode(signature, &enc_msg_len);
-    bool result = Utils::rsa_verify_signature(text.c_str(), text.length(), enc_msg, enc_msg_len, public_key);
+    uchar *enc_msg = Utils::base64_decode(signature.c_str(), &enc_msg_len);
+    bool result = Utils::_verify_signature(text.c_str(), text.length(), enc_msg, enc_msg_len, public_key);
     delete enc_msg;
     return result;
 }
