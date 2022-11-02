@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     const char *msg = "this message is going to be encoded";
     const string s_msg = string{msg};
 
-    assert(Utils::sha256(s_msg) == Utils::sha256(s_msg));
+    // assert(Utils::base64_decode(Utils::base64_encode(s_msg)) == s_msg);
 
     RSA *keypair = Utils::generate_rsa_keys();
     assert(keypair != NULL);
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     assert(strcmp(msg, decrypted_msg) == 0);
 
     delete[] encrypted_msg, decrypted_msg;
-    char *signed_msg = Utils::sign_message(msg, private_key);
+    char * signed_msg = Utils::sign_message(msg, private_key);
     assert(Utils::verify_signature(msg, signed_msg, public_key));
 
     assert(Utils::export_private_key(private_key, "./keys/", private_key_name));

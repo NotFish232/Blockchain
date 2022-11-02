@@ -107,47 +107,60 @@ bool Utils::rsa_verify_signature(const char *msg, size_t msg_len, const uchar *h
     EVP_MD_CTX_free(m_RSAVerifyCtx);
     return auth_status == 1;
 }
+char *Utils::base64_encode(const uchar *buffer, size_t length) {
+    BIO *bio, *b64;
+    BUF_MEM *buffer_ptr;
 
-string Utils::base64_encode(const string &input) {
-    const auto base64_memory = BIO_new(BIO_s_mem());
-    auto base64 = BIO_new(BIO_f_base64());
-    base64 = BIO_push(base64, base64_memory);
-    BIO_write(base64, input.c_str(), input.length());
-    BIO_flush(base64);
-    BUF_MEM *buffer_memory;
-    BIO_get_mem_ptr(base64, &buffer_memory);
-    string base64_encoded = string(buffer_memory->data, buffer_memory->length - 1);
-    BIO_free_all(base64);
-    return base64_encoded;
+    b64 = BIO_new(BIO_f_base64());
+    bio = BIO_new(BIO_s_mem());
+    bio = BIO_push(b64, bio);
+
+    BIO_write(bio, buffer, length);
+    BIO_flush(bio);
+    BIO_get_mem_ptr(bio, &buffer_ptr);
+    BIO_set_close(bio, BIO_NOCLOSE);
+    BIO_free_all(bio);
+    return buffer_ptr->data;
 }
 
-string Utils::base64_decode(const string &input) {
-    BIO *b64 = BIO_new(BIO_f_base64());
-    BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-    BIO *source = BIO_new_mem_buf(input.c_str(), -1);
-    BIO_push(b64, source);
-    const int maxlen = input.length() / 4 * 3 + 1;
-    string d(maxlen, ' ');
-    const int len = BIO_read(b64, (void *)d.data(), maxlen);
-    BIO_free(b64);
-    BIO_free(source);
-    return d;
+size_t Utils::calculate_base64_length(const char *b64_input) {
+    size_t len = strlen(b64_input), padding = 0;
+    if (b64_input[len - 1] == '=') {
+        padding = b64_input[len - 2] == '=' ? 2 : 1;
+    }
+    return (3 * len) / 4 - padding;
 }
 
-char *Utils::sign_message(const std::string msg, RSA *private_key) {
-    /*size_t enc_msg_len;
+uchar *Utils::base64_decode(const char *b64_msg, size_t *length_ptr) {
+    BIO *bio, *b64;
+
+    int decode_len = Utils::calculate_base64_length(b64_msg);
+    uchar *buffer = new uchar[decode_len + 1];
+    buffer[decode_len] = '\0';
+
+    bio = BIO_new_mem_buf(b64_msg, -1);
+    b64 = BIO_new(BIO_f_base64());
+    bio = BIO_push(b64, bio);
+
+    *length_ptr = BIO_read(bio, buffer, strlen(b64_msg));
+    BIO_free_all(bio);
+    return buffer;
+}
+
+char *Utils::sign_message(const std::string &msg, RSA *private_key) {
+    size_t enc_msg_len;
     uchar *enc_msg = Utils::rsa_sign((uchar *)msg.c_str(), msg.length(), &enc_msg_len, private_key);
     char *base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
     delete enc_msg;
-    return base64_msg;*/
+    return base64_msg;
 }
 
-bool Utils::verify_signature(const std::string text, const char *signature, RSA *public_key) {
-    /*size_t enc_msg_len;
+bool Utils::verify_signature(const std::string &text, const char *signature, RSA *public_key) {
+    size_t enc_msg_len;
     uchar *enc_msg = Utils::base64_decode(signature, &enc_msg_len);
     bool result = Utils::rsa_verify_signature(text.c_str(), text.length(), enc_msg, enc_msg_len, public_key);
     delete enc_msg;
-    return result;*/
+    return result;
 }
 
 #pragma GCC diagnostic pop
