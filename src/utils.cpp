@@ -92,7 +92,7 @@ uchar *Utils::_sign_message(const uchar *msg, size_t msg_len, size_t *enc_msg_le
     return enc_msg;
 }
 
-bool Utils::_verify_signature(const char *msg, size_t msg_len, const uchar *hash, size_t hash_len, RSA *rsa) {
+bool Utils::_verify_signature(const string &msg, const uchar *hash, size_t hash_len, RSA *rsa) {
     EVP_PKEY *pubKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pubKey, rsa);
     EVP_MD_CTX *m_RSAVerifyCtx = EVP_MD_CTX_create();
@@ -100,27 +100,29 @@ bool Utils::_verify_signature(const char *msg, size_t msg_len, const uchar *hash
     if (EVP_DigestVerifyInit(m_RSAVerifyCtx, NULL, EVP_sha256(), NULL, pubKey) <= 0) {
         return false;
     }
-    if (EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg, msg_len) <= 0) {
+    if (EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length()) <= 0) {
         return false;
     }
-    int auth_status = EVP_DigestVerifyFinal(m_RSAVerifyCtx, hash, hash_len);
+    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, hash, hash_len);
     EVP_MD_CTX_free(m_RSAVerifyCtx);
-    return auth_status == 1;
+    return result == 1;
 }
-char *Utils::base64_encode(const uchar *buffer, size_t length) {
+string Utils::base64_encode(const uchar *buffer, size_t length) {
     BIO *bio, *b64;
     BUF_MEM *buffer_ptr;
 
+    bio= BIO_new(BIO_s_mem());
     b64 = BIO_new(BIO_f_base64());
-    bio = BIO_new(BIO_s_mem());
     bio = BIO_push(b64, bio);
 
-    BIO_write(bio, buffer, length);
-    BIO_flush(bio);
-    BIO_get_mem_ptr(bio, &buffer_ptr);
-    BIO_set_close(bio, BIO_NOCLOSE);
+    BIO_write(b64, buffer, length);
+    BIO_flush(b64);
+    BIO_get_mem_ptr(b64, &buffer_ptr);
+
+    string result(buffer_ptr->data, buffer_ptr->length);
     BIO_free_all(bio);
-    return buffer_ptr->data;
+
+    return result;
 }
 
 size_t Utils::calculate_base64_length(const char *b64_input) {
@@ -131,34 +133,34 @@ size_t Utils::calculate_base64_length(const char *b64_input) {
     return (3 * len) / 4 - padding;
 }
 
-uchar *Utils::base64_decode(const char *b64_msg, size_t *length_ptr) {
+uchar *Utils::base64_decode(const string &input, size_t *length_ptr) {
     BIO *bio, *b64;
 
-    int decode_len = Utils::calculate_base64_length(b64_msg);
+    int decode_len = Utils::calculate_base64_length(input.c_str());
     uchar *buffer = new uchar[decode_len + 1];
     buffer[decode_len] = '\0';
 
-    bio = BIO_new_mem_buf(b64_msg, -1);
+    bio = BIO_new_mem_buf(input.c_str(), -1);
     b64 = BIO_new(BIO_f_base64());
     bio = BIO_push(b64, bio);
 
-    *length_ptr = BIO_read(bio, buffer, strlen(b64_msg));
+    *length_ptr = BIO_read(bio, buffer, input.length());
     BIO_free_all(bio);
     return buffer;
 }
 
-string Utils::sign_message(const std::string &msg, RSA *private_key) {
+string Utils::sign_message(const string &msg, RSA *private_key) {
     size_t enc_msg_len;
     uchar *enc_msg = Utils::_sign_message((uchar *)msg.c_str(), msg.length(), &enc_msg_len, private_key);
-    char *base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
+    string base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
     delete enc_msg;
     return base64_msg;
 }
 
-bool Utils::verify_signature(const std::string &text, const string &signature, RSA *public_key) {
+bool Utils::verify_signature(const string &text, const string &signature, RSA *public_key) {
     size_t enc_msg_len;
-    uchar *enc_msg = Utils::base64_decode(signature.c_str(), &enc_msg_len);
-    bool result = Utils::_verify_signature(text.c_str(), text.length(), enc_msg, enc_msg_len, public_key);
+    uchar *enc_msg = Utils::base64_decode(signature, &enc_msg_len);
+    bool result = Utils::_verify_signature(text, enc_msg, enc_msg_len, public_key);
     delete enc_msg;
     return result;
 }

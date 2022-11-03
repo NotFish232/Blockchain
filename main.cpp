@@ -6,12 +6,9 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-    /*RSA *keypair = Utils::generate_rsa_keys();
     string msg = "this message is going to be encoded";
-    string enc = Utils::base64_encode(msg);
-    for (const char &ch: enc) cout << "'" << ch << "' ";
-    string dec = Utils::base64_decode(enc);
-    cout << dec << endl;
-    Utils::free(keypair);*/
+    string enc = Utils::base64_encode((uchar*)msg.c_str(), msg.length());
+    //uchar* dec = Utils::base64_decode(enc.c_str(), &i);
+    //delete[] dec;
     return 0;
 }
