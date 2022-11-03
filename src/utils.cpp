@@ -71,14 +71,14 @@ RSA *Utils::import_private_key(const string file_path, const string file_name) {
     BIO_free(file);
     return private_key;
 }
-uchar *Utils::_sign_message(const uchar *msg, size_t msg_len, size_t *enc_msg_len_ptr, RSA *rsa) {
+uchar *Utils::_sign_message(const string &msg, size_t *enc_msg_len_ptr, RSA *rsa) {
     EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
     EVP_PKEY *priKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(priKey, rsa);
     if (EVP_DigestSignInit(m_RSASignCtx, NULL, EVP_sha256(), NULL, priKey) <= 0) {
         return NULL;
     }
-    if (EVP_DigestSignUpdate(m_RSASignCtx, msg, msg_len) <= 0) {
+    if (EVP_DigestSignUpdate(m_RSASignCtx, msg.c_str(), msg.length()) <= 0) {
         return NULL;
     }
     if (EVP_DigestSignFinal(m_RSASignCtx, NULL, enc_msg_len_ptr) <= 0) {
@@ -151,7 +151,7 @@ uchar *Utils::base64_decode(const string &b64_text, size_t *length_ptr) {
 
 string Utils::sign_message(const string &msg, RSA *private_key) {
     size_t enc_msg_len;
-    uchar *enc_msg = Utils::_sign_message((uchar *)msg.c_str(), msg.length(), &enc_msg_len, private_key);
+    uchar *enc_msg = Utils::_sign_message(msg, &enc_msg_len, private_key);
     string base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
     delete enc_msg;
     return base64_msg;
