@@ -1,5 +1,5 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#ifndef BLOCK_HPP
+#define BLOCK_HPP
 
 #include "utils.hpp"
 #include <iostream>
