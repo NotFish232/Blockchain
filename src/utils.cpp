@@ -125,26 +125,26 @@ string Utils::base64_encode(const uchar *buffer, size_t length) {
     return result;
 }
 
-size_t Utils::calculate_base64_length(const char *b64_input) {
-    size_t len = strlen(b64_input), padding = 0;
-    if (b64_input[len - 1] == '=') {
-        padding = b64_input[len - 2] == '=' ? 2 : 1;
+size_t Utils::calculate_base64_length(const string &b64_text) {
+    size_t len = b64_text.length(), padding = 0;
+    if (b64_text[len - 1] == '=') {
+        padding = b64_text[len - 2] == '=' ? 2 : 1;
     }
     return (3 * len) / 4 - padding;
 }
 
-uchar *Utils::base64_decode(const string &input, size_t *length_ptr) {
+uchar *Utils::base64_decode(const string &b64_text, size_t *length_ptr) {
     BIO *bio, *b64;
 
-    int decode_len = Utils::calculate_base64_length(input.c_str());
+    int decode_len = Utils::calculate_base64_length(b64_text);
     uchar *buffer = new uchar[decode_len + 1];
     buffer[decode_len] = '\0';
 
-    bio = BIO_new_mem_buf(input.c_str(), -1);
+    bio = BIO_new_mem_buf(b64_text.c_str(), -1);
     b64 = BIO_new(BIO_f_base64());
     bio = BIO_push(b64, bio);
 
-    *length_ptr = BIO_read(bio, buffer, input.length());
+    *length_ptr = BIO_read(bio, buffer, b64_text.length());
     BIO_free_all(bio);
     return buffer;
 }
