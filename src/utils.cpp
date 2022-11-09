@@ -71,74 +71,63 @@ RSA *Utils::import_private_key(const string file_path, const string file_name) {
     BIO_free(file);
     return private_key;
 }
-uchar *Utils::_sign_message(const string &msg, size_t *enc_msg_len_ptr, RSA *rsa) {
+string Utils::_sign_message(const string &msg,  RSA *rsa) {
     EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
     EVP_PKEY *priKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(priKey, rsa);
-    if (EVP_DigestSignInit(m_RSASignCtx, NULL, EVP_sha256(), NULL, priKey) <= 0) {
-        return NULL;
-    }
-    if (EVP_DigestSignUpdate(m_RSASignCtx, msg.c_str(), msg.length()) <= 0) {
-        return NULL;
-    }
-    if (EVP_DigestSignFinal(m_RSASignCtx, NULL, enc_msg_len_ptr) <= 0) {
-        return NULL;
-    }
-    uchar *enc_msg = new uchar[*enc_msg_len_ptr];
-    if (EVP_DigestSignFinal(m_RSASignCtx, enc_msg, enc_msg_len_ptr) <= 0) {
-        return NULL;
-    }
+    EVP_DigestSignInit(m_RSASignCtx, NULL, EVP_sha256(), NULL, priKey);
+    EVP_DigestSignUpdate(m_RSASignCtx, msg.c_str(), msg.length());
+    size_t length;
+    EVP_DigestSignFinal(m_RSASignCtx, NULL, &length); // gets length
+    char *enc_msg = new char[length];
+    EVP_DigestSignFinal(m_RSASignCtx, (uchar*)enc_msg, &length);
     EVP_MD_CTX_free(m_RSASignCtx);
-    return enc_msg;
+    string result(enc_msg);
+    delete[] enc_msg;
+    return result;
 }
 
-bool Utils::_verify_signature(const string &msg, const uchar *hash, size_t hash_len, RSA *rsa) {
+bool Utils::_verify_signature(const string &msg, const string &hash, RSA *rsa) {
     EVP_PKEY *pubKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pubKey, rsa);
     EVP_MD_CTX *m_RSAVerifyCtx = EVP_MD_CTX_create();
-
-    if (EVP_DigestVerifyInit(m_RSAVerifyCtx, NULL, EVP_sha256(), NULL, pubKey) <= 0) {
-        return false;
-    }
-    if (EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length()) <= 0) {
-        return false;
-    }
-    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, hash, hash_len);
+    EVP_DigestVerifyInit(m_RSAVerifyCtx, NULL, EVP_sha256(), NULL, pubKey);
+    EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length());
+    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, (uchar*)hash.c_str(), hash.length());
     EVP_MD_CTX_free(m_RSAVerifyCtx);
     return result == 1;
 }
 string Utils::base64_encode(const string &input) {
-  const int pl = (input.length() + 2) / 3 * 4;
-  char * output = new char[pl + 1]; //+1 for the terminating null that EVP_EncodeBlock adds on
-  const int ol = EVP_EncodeBlock((uchar*)output, (uchar*)input.c_str(), input.length());
-  if (pl != ol) return NULL;
-  string result(output);
-  delete[] output;
-  return result;
+    const int pl = (input.length() + 2) / 3 * 4;
+    // have to put it in char * first in order to account for null terminator
+    char *output = new char[pl];
+    const int ol = EVP_EncodeBlock((uchar*)output, (uchar *)input.c_str(), input.length());
+    if (pl != ol)
+        return NULL;
+    string result(output);
+    delete[] output;
+    return result;
 }
 
 string Utils::base64_decode(const string &input) {
-  const int pl = input.length() / 4 * 3;
-  char *output = new char[pl + 1];
-  const int ol = EVP_DecodeBlock((uchar*)output, (uchar*)input.c_str(), input.length());
-  if (pl != ol) return NULL;
-  string result(output);
-  delete[] output;
-  return result;
+    const int pl = input.length() / 4 * 3;
+    char *output = new char[pl];
+    const int ol = EVP_DecodeBlock((uchar *)output, (uchar *)input.c_str(), input.length());
+    if (pl != ol)
+        return NULL;
+    string result(output);
+    delete[] output;
+    return result;
 }
 string Utils::sign_message(const string &msg, RSA *private_key) {
-    /*size_t enc_msg_len;
-    uchar *enc_msg = Utils::_sign_message(msg, &enc_msg_len, private_key);
+    string enc_msg = Utils::_sign_message(msg, private_key);
     string base64_msg = Utils::base64_encode(enc_msg);
-    delete enc_msg;
-    return base64_msg;*/
+    return base64_msg;
 }
 
 bool Utils::verify_signature(const string &text, const string &signature, RSA *public_key) {
-    /*uchar *enc_msg = Utils::base64_decode(signature.c_str(), signature.length());
-    bool result = Utils::_verify_signature(text, enc_msg, strlen((char*)enc_msg), public_key);
-    delete enc_msg;
-    return result;*/
+    string enc_msg = Utils::base64_decode(signature);
+    return Utils::_verify_signature(text, enc_msg, public_key);
 }
 
 #pragma GCC diagnostic pop

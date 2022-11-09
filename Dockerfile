@@ -4,4 +4,4 @@ RUN apt -y update && apt -y upgrade && apt-get -y install
 RUN mkdir Blockchain
 WORKDIR /Blockchain
 EXPOSE 8080
-ENTRYPOINT ["/bin/bash", "./entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "./scripts/entrypoint.sh"]

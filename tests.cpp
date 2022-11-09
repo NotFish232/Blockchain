@@ -7,15 +7,15 @@
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-#define assert(condition)                                                                                    \
-    do {                                                                                                     \
-        if (condition) {                                                                                     \
-            cout << GREEN "[SUCCESS]" RESET " Assertion `" #condition "` succeeded! \n";                     \
-            passing_tests++;                                                                                 \
-        } else {                                                                                             \
-            cout << RED "[ERROR]" RESET " Assertion `" #condition "` failed on line " << __LINE__ << ". \n"; \
-        }                                                                                                    \
-        total_tests++;                                                                                       \
+#define assert(condition)                                                                                      \
+    do {                                                                                                       \
+        if (condition) {                                                                                       \
+            cout << GREEN "[SUCCESS]" RESET " Assertion `" #condition "` succeeded! \n";                       \
+            passing_tests++;                                                                                   \
+        } else {                                                                                               \
+            cout << RED "[FAILURE]" RESET " Assertion `" #condition "` failed on line " << __LINE__ << ". \n"; \
+        }                                                                                                      \
+        total_tests++;                                                                                         \
     } while (false)
 
 using namespace std;
@@ -25,6 +25,11 @@ int main(int argc, char **argv) {
     int passing_tests = 0, total_tests = 0;
     const char *msg = "this message is going to be encoded";
     const string s_msg = string{msg};
+
+    assert(Utils::sha256(s_msg) == Utils::sha256(s_msg));
+
+    string b64 = Utils::base64_encode(s_msg);
+    assert (Utils::base64_decode(b64) == s_msg);
 
     RSA *keypair = Utils::generate_rsa_keys();
     assert(keypair != NULL);
