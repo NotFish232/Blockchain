@@ -107,62 +107,38 @@ bool Utils::_verify_signature(const string &msg, const uchar *hash, size_t hash_
     EVP_MD_CTX_free(m_RSAVerifyCtx);
     return result == 1;
 }
-string Utils::base64_encode(const uchar *buffer, size_t length) {
-    BIO *bio, *b64;
-    BUF_MEM *buffer_ptr;
-
-    bio= BIO_new(BIO_s_mem());
-    b64 = BIO_new(BIO_f_base64());
-    bio = BIO_push(b64, bio);
-
-    BIO_write(b64, buffer, length);
-    BIO_flush(b64);
-    BIO_get_mem_ptr(b64, &buffer_ptr);
-
-    string result(buffer_ptr->data, buffer_ptr->length);
-    BIO_free_all(bio);
-
-    return result;
+string Utils::base64_encode(const string &input) {
+  const int pl = (input.length() + 2) / 3 * 4;
+  char * output = new char[pl + 1]; //+1 for the terminating null that EVP_EncodeBlock adds on
+  const int ol = EVP_EncodeBlock((uchar*)output, (uchar*)input.c_str(), input.length());
+  if (pl != ol) return NULL;
+  string result(output);
+  delete[] output;
+  return result;
 }
 
-size_t Utils::calculate_base64_length(const string &b64_text) {
-    size_t len = b64_text.length(), padding = 0;
-    if (b64_text[len - 1] == '=') {
-        padding = b64_text[len - 2] == '=' ? 2 : 1;
-    }
-    return (3 * len) / 4 - padding;
+string Utils::base64_decode(const string &input) {
+  const int pl = input.length() / 4 * 3;
+  char *output = new char[pl + 1];
+  const int ol = EVP_DecodeBlock((uchar*)output, (uchar*)input.c_str(), input.length());
+  if (pl != ol) return NULL;
+  string result(output);
+  delete[] output;
+  return result;
 }
-
-uchar *Utils::base64_decode(const string &b64_text, size_t *length_ptr) {
-    BIO *bio, *b64;
-
-    int decode_len = Utils::calculate_base64_length(b64_text);
-    uchar *buffer = new uchar[decode_len + 1];
-    buffer[decode_len] = '\0';
-
-    bio = BIO_new_mem_buf(b64_text.c_str(), -1);
-    b64 = BIO_new(BIO_f_base64());
-    bio = BIO_push(b64, bio);
-
-    *length_ptr = BIO_read(bio, buffer, b64_text.length());
-    BIO_free_all(bio);
-    return buffer;
-}
-
 string Utils::sign_message(const string &msg, RSA *private_key) {
-    size_t enc_msg_len;
+    /*size_t enc_msg_len;
     uchar *enc_msg = Utils::_sign_message(msg, &enc_msg_len, private_key);
-    string base64_msg = Utils::base64_encode(enc_msg, enc_msg_len);
+    string base64_msg = Utils::base64_encode(enc_msg);
     delete enc_msg;
-    return base64_msg;
+    return base64_msg;*/
 }
 
 bool Utils::verify_signature(const string &text, const string &signature, RSA *public_key) {
-    size_t enc_msg_len;
-    uchar *enc_msg = Utils::base64_decode(signature, &enc_msg_len);
-    bool result = Utils::_verify_signature(text, enc_msg, enc_msg_len, public_key);
+    /*uchar *enc_msg = Utils::base64_decode(signature.c_str(), signature.length());
+    bool result = Utils::_verify_signature(text, enc_msg, strlen((char*)enc_msg), public_key);
     delete enc_msg;
-    return result;
+    return result;*/
 }
 
 #pragma GCC diagnostic pop

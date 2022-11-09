@@ -6,13 +6,13 @@
 #include <openssl/rsa.h>
 #include <string>
 
-#define uchar unsigned char
+typedef unsigned char uchar;
 
 class Utils {
 public:
-    static size_t calculate_base64_length(const std::string &b64_text);
-    static std::string base64_encode(const uchar *input, size_t len);
-    static uchar *base64_decode(const std::string &input, size_t *len_ptr);
+    // static size_t calculate_base64_length(const std::string &b64_text);
+    static std::string base64_encode(const std::string &input);
+    static std::string base64_decode(const std::string &input);
     static uchar *_sign_message(const std::string &msg, size_t *enc_msg_len_ptr, RSA *private_key);
     static bool _verify_signature(const std::string &msg, const uchar *hash, size_t hash_len, RSA *public_key);
     static bool file_exists(std::string file_path, std::string file_name);

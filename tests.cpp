@@ -26,8 +26,6 @@ int main(int argc, char **argv) {
     const char *msg = "this message is going to be encoded";
     const string s_msg = string{msg};
 
-    // assert(Utils::base64_decode(Utils::base64_encode(s_msg)) == s_msg);
-
     RSA *keypair = Utils::generate_rsa_keys();
     assert(keypair != NULL);
     Utils::free(keypair);
