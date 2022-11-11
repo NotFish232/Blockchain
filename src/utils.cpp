@@ -6,11 +6,11 @@ using namespace std;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-string Utils::sha256(const string &str) {
+string Utils::sha256(const string &input) {
     uchar hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
     SHA256_Init(&sha256);
-    SHA256_Update(&sha256, str.c_str(), str.length());
+    SHA256_Update(&sha256, input.c_str(), input.length());
     SHA256_Final(hash, &sha256);
     stringstream ss;
     for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i) {
@@ -96,7 +96,7 @@ string Utils::_sign_message(const string &msg, RSA *private_key) {
     return result;
 }
 
-bool Utils::_verify_signature(const string &msg, const string &hash, RSA *rsa) {
+bool Utils::_verify_signature(const string &msg, const string &signature, RSA *rsa) {
     EVP_PKEY *pubKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pubKey, rsa);
     EVP_MD_CTX *m_RSAVerifyCtx = EVP_MD_CTX_create();
@@ -106,19 +106,16 @@ bool Utils::_verify_signature(const string &msg, const string &hash, RSA *rsa) {
     if (EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length()) <= 0) {
         return false;
     }
-    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, (uchar *)hash.c_str(), hash.length());
+    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, (uchar *)signature.c_str(), signature.length());
     EVP_MD_CTX_free(m_RSAVerifyCtx);
     return result == 1;
 }
 
 string Utils::base64_encode(const string &input) {
     const int pl = 4 * ((input.length() + 2) / 3);
-    // have to put it in char * first in order to account for null terminator
     string output(pl, ' ');
     const int ol = EVP_EncodeBlock((uchar *)output.c_str(), (uchar *)input.c_str(), input.length());
-    if (pl != ol)
-        return NULL;
-    return output;
+    return pl == ol ? output : NULL;
 }
 
 string Utils::base64_decode(const string &input) {

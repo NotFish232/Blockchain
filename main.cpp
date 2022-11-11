@@ -20,12 +20,17 @@ int main(int argc, char **argv) {
     RSA *private_key = Utils::import_private_key();
     RSA *public_key = Utils::import_public_key();
     string msg = "*)$#*)($#*843908093280943809FJjsdlkjflkjKLFDJLK$#*()*)(#4093FJLKD random message $*)*#)*()4890380943820 ";
-    for (int i = msg.length() - 1; i >= 0; --i) {
+    /*for (int i = msg.length() - 1; i >= 0; --i) {
         string sub = msg.substr(i);
         string signature = Utils::sign_message(sub, private_key);
        //  cout << signature << endl;
         bool result = Utils::verify_signature(sub, signature, public_key);
         cout << boolalpha << result << endl;
-    }
+    }*/
+    string signature = Utils::sign_message(msg, private_key);
+    bool result = Utils::verify_signature(msg, signature, public_key);
+    cout << boolalpha << result << endl;
+    Utils::free(private_key);
+    Utils::free(public_key);
     return 0;
 }
