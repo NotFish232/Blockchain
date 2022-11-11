@@ -71,19 +71,28 @@ RSA *Utils::import_private_key(const string file_path, const string file_name) {
     BIO_free(file);
     return private_key;
 }
-string Utils::_sign_message(const string &msg,  RSA *rsa) {
-    EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
+
+string Utils::_sign_message(const string &msg, RSA *private_key) {
     EVP_PKEY *priKey = EVP_PKEY_new();
-    EVP_PKEY_assign_RSA(priKey, rsa);
-    EVP_DigestSignInit(m_RSASignCtx, NULL, EVP_sha256(), NULL, priKey);
-    EVP_DigestSignUpdate(m_RSASignCtx, msg.c_str(), msg.length());
+    EVP_PKEY_assign_RSA(priKey, private_key);
+
+    EVP_MD_CTX *m_RSASignCtx = EVP_MD_CTX_create();
+
+    if (EVP_DigestSignInit(m_RSASignCtx, NULL, EVP_sha256(), NULL, priKey) <= 0) {
+        return NULL;
+    }
+    if (EVP_DigestSignUpdate(m_RSASignCtx, msg.c_str(), msg.length()) <= 0) {
+        return NULL;
+    }
     size_t length;
-    EVP_DigestSignFinal(m_RSASignCtx, NULL, &length); // gets length
-    char *enc_msg = new char[length];
-    EVP_DigestSignFinal(m_RSASignCtx, (uchar*)enc_msg, &length);
+    if (EVP_DigestSignFinal(m_RSASignCtx, NULL, &length) <= 0) {
+        return NULL;
+    }
+    string result(length, ' ');
+    if (EVP_DigestSignFinal(m_RSASignCtx, (uchar *)result.c_str(), &length) <= 0) {
+        return NULL;
+    }
     EVP_MD_CTX_free(m_RSASignCtx);
-    string result(enc_msg);
-    delete[] enc_msg;
     return result;
 }
 
@@ -91,33 +100,37 @@ bool Utils::_verify_signature(const string &msg, const string &hash, RSA *rsa) {
     EVP_PKEY *pubKey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pubKey, rsa);
     EVP_MD_CTX *m_RSAVerifyCtx = EVP_MD_CTX_create();
-    EVP_DigestVerifyInit(m_RSAVerifyCtx, NULL, EVP_sha256(), NULL, pubKey);
-    EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length());
-    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, (uchar*)hash.c_str(), hash.length());
+    if (EVP_DigestVerifyInit(m_RSAVerifyCtx, NULL, EVP_sha256(), NULL, pubKey) <= 0) {
+        return false;
+    }
+    if (EVP_DigestVerifyUpdate(m_RSAVerifyCtx, msg.c_str(), msg.length()) <= 0) {
+        return false;
+    }
+    int result = EVP_DigestVerifyFinal(m_RSAVerifyCtx, (uchar *)hash.c_str(), hash.length());
     EVP_MD_CTX_free(m_RSAVerifyCtx);
     return result == 1;
 }
+
 string Utils::base64_encode(const string &input) {
-    const int pl = (input.length() + 2) / 3 * 4;
+    const int pl = 4 * ((input.length() + 2) / 3);
     // have to put it in char * first in order to account for null terminator
-    char *output = new char[pl];
-    const int ol = EVP_EncodeBlock((uchar*)output, (uchar *)input.c_str(), input.length());
+    string output(pl, ' ');
+    const int ol = EVP_EncodeBlock((uchar *)output.c_str(), (uchar *)input.c_str(), input.length());
     if (pl != ol)
         return NULL;
-    string result(output);
-    delete[] output;
-    return result;
+    return output;
 }
 
 string Utils::base64_decode(const string &input) {
-    const int pl = input.length() / 4 * 3;
-    char *output = new char[pl];
-    const int ol = EVP_DecodeBlock((uchar *)output, (uchar *)input.c_str(), input.length());
+    const int pl = 3 * input.length() / 4;
+    string output(pl, ' ');
+    const int ol = EVP_DecodeBlock((uchar *)output.c_str(), (uchar *)input.c_str(), input.length());
     if (pl != ol)
         return NULL;
-    string result(output);
-    delete[] output;
-    return result;
+    output.erase(std::find_if(output.rbegin(), output.rend(), [](const char &ch) {
+        return ch != ' ' && ch != '\0';
+    }).base(), output.end());
+    return output;
 }
 string Utils::sign_message(const string &msg, RSA *private_key) {
     string enc_msg = Utils::_sign_message(msg, private_key);

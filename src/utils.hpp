@@ -5,13 +5,15 @@
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 #include <string>
+#include <algorithm>
+
+using std::string;
 
 typedef unsigned char uchar;
 
 class Utils {
 private:
-    // static size_t calculate_base64_length(const std::string &b64_text);
-    static std::string _sign_message(const std::string &msg, RSA *private_key);
+    static string _sign_message(const std::string &msg, RSA *private_key);
     static bool _verify_signature(const std::string &msg, const std::string &hash, RSA *public_key);
 public:
     static std::string base64_encode(const std::string &input);

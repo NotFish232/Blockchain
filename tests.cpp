@@ -1,8 +1,8 @@
 #include "src/utils.hpp"
 #include <iostream>
 
-#define private_key_name "user0_private"
-#define public_key_name "user0_public"
+#define private_key_name "private"
+#define public_key_name "public"
 #define GREEN "\033[32m"
 #define RED "\033[31m"
 #define RESET "\033[0m"
@@ -23,7 +23,7 @@ using namespace std;
 int main(int argc, char **argv) {
     cout << "Running test suite...\n";
     int passing_tests = 0, total_tests = 0;
-    const char *msg = "this message is going to be encoded";
+    const char *msg = "this message is going to be encoded $*(()*#)(*903480983409s";
     const string s_msg = string{msg};
 
     assert(Utils::sha256(s_msg) == Utils::sha256(s_msg));
