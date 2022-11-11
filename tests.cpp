@@ -1,4 +1,4 @@
-#include "src/utils.hpp"
+#include "src/crypto.hpp"
 #include <iostream>
 
 #define private_key_name "private"
@@ -26,30 +26,30 @@ int main(int argc, char **argv) {
     const char *msg = "this message is going to be encoded $*(()*#)(*903480983409s";
     const string s_msg = string{msg};
 
-    assert(Utils::sha256(s_msg) == Utils::sha256(s_msg));
+    assert(Crypto::sha256(s_msg) == Crypto::sha256(s_msg));
 
-    string b64 = Utils::base64_encode(s_msg);
-    assert (Utils::base64_decode(b64) == s_msg);
+    string b64 = Crypto::base64_encode(s_msg);
+    assert (Crypto::base64_decode(b64) == s_msg);
 
-    RSA *keypair = Utils::generate_rsa_keys();
+    RSA *keypair = Crypto::generate_rsa_keys();
     assert(keypair != NULL);
-    Utils::free(keypair);
+    Crypto::free(keypair);
 
-    RSA *private_key = Utils::import_private_key("./keys/", private_key_name);
-    RSA *public_key = Utils::import_public_key("./keys/", public_key_name);
+    RSA *private_key = Crypto::import_private_key("./keys/", private_key_name);
+    RSA *public_key = Crypto::import_public_key("./keys/", public_key_name);
     assert(private_key != NULL);
     assert(public_key != NULL);
 
-    char *encrypted_msg = Utils::rsa_encrypt(msg, public_key);
-    char *decrypted_msg = Utils::rsa_decrypt(encrypted_msg, private_key);
+    char *encrypted_msg = Crypto::rsa_encrypt(msg, public_key);
+    char *decrypted_msg = Crypto::rsa_decrypt(encrypted_msg, private_key);
     assert(strcmp(msg, decrypted_msg) == 0);
 
     delete[] encrypted_msg, decrypted_msg;
-    string signed_msg = Utils::sign_message(msg, private_key);
-    assert(Utils::verify_signature(msg, signed_msg, public_key));
+    string signed_msg = Crypto::sign_message(msg, private_key);
+    assert(Crypto::verify_signature(msg, signed_msg, public_key));
 
-    assert(Utils::export_private_key(private_key, "./keys/", private_key_name));
-    assert(Utils::export_public_key(public_key, "./keys/", public_key_name));
+    assert(Crypto::export_private_key(private_key, "./keys/", private_key_name));
+    assert(Crypto::export_public_key(public_key, "./keys/", public_key_name));
 
     cout << "Tests passed: [";
     cout << (passing_tests == total_tests ? GREEN : RED);

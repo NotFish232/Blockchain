@@ -1,7 +1,7 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
-#include "utils.hpp"
+#include "crypto.hpp"
 #include <iostream>
 
 class Block {
