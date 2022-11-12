@@ -42,21 +42,21 @@ char *Crypto::rsa_decrypt(const char *msg, RSA *private_key) {
     return result != -1 ? (char *)out_buf : NULL;
 }
 
-int Crypto::export_public_key(const RSA *public_key, const string file_path, const string file_name) {
+int Crypto::export_public_key(const RSA *public_key, const string &file_name,  const string &file_path) {
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     int result = PEM_write_bio_RSAPublicKey(file, public_key);
     BIO_free(file);
     return result;
 }
 
-int Crypto::export_private_key(const RSA *private_key, const string file_path, const string file_name) {
+int Crypto::export_private_key(const RSA *private_key, const string &file_name, const string &file_path) {
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     int result = PEM_write_bio_RSAPrivateKey(file, private_key, NULL, NULL, 0, NULL, NULL);
     BIO_free(file);
     return result;
 }
 
-RSA *Crypto::import_public_key(const string file_path, const string file_name) {
+RSA *Crypto::import_public_key(const string &file_name, const string &file_path) {
     RSA *public_key = NULL;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPublicKey(file, &public_key, NULL, NULL);
@@ -64,7 +64,7 @@ RSA *Crypto::import_public_key(const string file_path, const string file_name) {
     return public_key;
 }
 
-RSA *Crypto::import_private_key(const string file_path, const string file_name) {
+RSA *Crypto::import_private_key(const string &file_name, const string &file_path) {
     RSA *private_key = NULL;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPrivateKey(file, &private_key, NULL, NULL);

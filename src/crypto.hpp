@@ -67,10 +67,10 @@ public:
 
     static char *rsa_encrypt(const char *msg, RSA *public_key);
     static char *rsa_decrypt(const char *msg, RSA *private_key);
-    static int export_public_key(const RSA *public_key, const string file_path = "./keys/", const string file_name = "public");
-    static int export_private_key(const RSA *private_key, const string file_path = "./keys/", const string file_name = "private");
-    static RSA *import_public_key(const string file_path = "./keys/", const string file_name = "public");
-    static RSA *import_private_key(const string file_path = "./keys/", const string file_name = "private");
+    static int export_public_key(const RSA *public_key, const string &file_name = "public", const string &file_path = "./keys/");
+    static int export_private_key(const RSA *private_key, const string &file_name = "private", const string &file_path = "./keys/");
+    static RSA *import_public_key(const string &file_name = "public", const string &file_path = "./keys/");
+    static RSA *import_private_key(const string &file_name = "private", const string &file_path = "./keys/");
     static string sign_message(const string &msg, RSA *private_key);
     static bool verify_signature(const string &msg, const string &signature, RSA *public_key);
 };
