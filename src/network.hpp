@@ -35,6 +35,7 @@ public:
     Network(int port);
     ~Network();
     void run();
+    void stop();
     void send_message(std::string msg);
     void add_connection(std::string url);
 };

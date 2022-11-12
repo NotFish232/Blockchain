@@ -6,8 +6,7 @@
 
 class Block {
 private:
-    Block *last_block;
-    RSA *key_pair;
+    RSA *public_key;
     std::string hash;
 
 public:
