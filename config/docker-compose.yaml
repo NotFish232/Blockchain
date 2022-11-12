@@ -5,7 +5,6 @@ services:
     build: .
     image: blockchain_img:v1
     volumes:
-    - ./:/Blockchain
+    - ../:/Blockchain
     ports:
       - "8080:8080"
-
