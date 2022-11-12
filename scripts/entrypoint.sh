@@ -1,4 +1,4 @@
 #!/bin/bash
-chmod +x ./compile.sh
-./compile.sh
-../bin/main.out
+chmod +x ./scripts/compile.sh
+./scripts/compile.sh
+./bin/main.out
