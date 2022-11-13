@@ -1,6 +1,6 @@
-#include "src/crypto.hpp"
-#include <iostream>
+#include "include/crypto.hpp"
 #include <chrono>
+#include <iostream>
 
 #define private_key_name "private"
 #define public_key_name "public"
@@ -57,7 +57,6 @@ int main(int argc, char **argv) {
     assert(Crypto::export_private_key(private_key, private_key_name));
     assert(Crypto::export_public_key(public_key, public_key_name));
 
-
     auto end = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
@@ -65,7 +64,8 @@ int main(int argc, char **argv) {
     cout << "Tests passed: [";
     cout << (passing_tests == total_tests ? GREEN : RED);
     cout << passing_tests << "/" << total_tests;
-    cout << RESET << "]" << "\n";
-    cout << "Time taken: " << duration .count() << " milliseconds" << endl;
+    cout << RESET << "]"
+         << "\n";
+    cout << "Time taken: " << duration.count() << " milliseconds" << endl;
     return 0;
 }

@@ -1,5 +1,5 @@
-#include "src/network.hpp"
-#include "src/crypto.hpp"
+#include "include/network.hpp"
+#include "include/crypto.hpp"
 #include <iostream>
 
 using namespace std;

@@ -1,4 +1,4 @@
-#include "block_chain.hpp"
+#include "../include/block_chain.hpp"
 
 BlockChain::BlockChain() {
 }
