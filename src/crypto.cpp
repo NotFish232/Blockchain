@@ -42,7 +42,37 @@ char *Crypto::rsa_decrypt(const char *msg, RSA *private_key) {
     return result != -1 ? (char *)out_buf : NULL;
 }
 
-int Crypto::export_public_key(const RSA *public_key, const string &file_name,  const string &file_path) {
+RSA *Crypto::public_from_string(const string &key) {
+    BIO *bo = BIO_new(BIO_s_mem());
+    BIO_write(bo, key.c_str(), key.length());
+
+    EVP_PKEY *pkey = 0;
+    PEM_read_bio_PUBKEY(bo, &pkey, NULL, NULL);
+
+    BIO_free(bo);
+
+    RSA *rsa = EVP_PKEY_get1_RSA(pkey);
+    EVP_PKEY_free(pkey);
+    return rsa;
+}
+
+RSA *Crypto::private_from_string(const string &key) {
+    BIO *bo = BIO_new(BIO_s_mem());
+    BIO_write(bo, key.c_str(), key.length());
+
+    EVP_PKEY *pkey = 0;
+    PEM_read_bio_PrivateKey(bo, &pkey, NULL, NULL);
+
+    BIO_free(bo);
+
+    RSA *rsa = EVP_PKEY_get1_RSA(pkey);
+    EVP_PKEY_free(pkey);
+    return rsa;
+}
+
+
+
+int Crypto::export_public_key(const RSA *public_key, const string &file_name, const string &file_path) {
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     int result = PEM_write_bio_RSAPublicKey(file, public_key);
     BIO_free(file);
@@ -125,8 +155,9 @@ string Crypto::base64_decode(const string &input) {
     if (pl != ol)
         return NULL;
     output.erase(std::find_if(output.rbegin(), output.rend(), [](const char &ch) {
-        return ch != ' ' && ch != '\0';
-    }).base(), output.end());
+                     return ch != ' ' && ch != '\0';
+                 }).base(),
+                 output.end());
     return output;
 }
 string Crypto::sign_message(const string &msg, RSA *private_key) {

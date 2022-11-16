@@ -2,11 +2,13 @@
 #define SERVER_HPP
 
 #define ASIO_STANDALONE
+#include <functional>
 #include <iostream>
 #include <set>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
+typedef std::function<void(const std::string &)> func;
 typedef websocketpp::server<websocketpp::config::asio> server;
 typedef std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> con_set;
 
@@ -17,6 +19,8 @@ class Server {
 private:
     server _server;
     con_set connections;
+    func message_callback;
+
     void on_open(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);
     void on_fail(websocketpp::connection_hdl hdl);
@@ -26,7 +30,9 @@ public:
     Server();
     ~Server();
     void set_port(int port);
+    void set_message_callback(const func &callback);
     void run();
+    void stop();
 };
 
 #endif

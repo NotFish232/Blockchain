@@ -3,6 +3,7 @@
 
 #include "client.hpp"
 #include "server.hpp"
+#include "utils.hpp"
 #include <jsoncpp/json/json.h>
 #include <set>
 #include <thread>
@@ -28,13 +29,14 @@ private:
     std::set<std::pair<Client, std::thread>> _clients;
 
 public:
-    // port to listen on
-    Network(int port);
+    Network();
     ~Network();
     void run();
     void stop();
+    void set_port(int port);
     void send_message(const std::string &msg);
-    void add_connection(const std::string &url);
+    void open_connection(const std::string &url);
+    void set_message_callback(const func &callback);
 };
 
 #endif
