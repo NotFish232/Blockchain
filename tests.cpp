@@ -2,8 +2,8 @@
 #include <chrono>
 #include <iostream>
 
-#define private_key_name "private"
-#define public_key_name "public"
+#define private_key_name "user0_private"
+#define public_key_name "user0_public"
 #define GREEN "\033[32m"
 #define RED "\033[31m"
 #define RESET "\033[0m"

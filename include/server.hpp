@@ -27,12 +27,10 @@ private:
     void on_message(websocketpp::connection_hdl hdl, server::message_ptr msg);
 
 public:
-    Server();
+    Server(int port);
     ~Server();
-    void set_port(int port);
     void set_message_callback(const func &callback);
     void run();
-    void stop();
 };
 
 #endif

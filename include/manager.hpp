@@ -1,12 +1,11 @@
 #ifndef MANAGER_HPP
 #define MANAGER_HPP
 
-#define PORT 8080
-#define USER "user0"
-
 #include "block_chain.hpp"
-#include "network.hpp"
+#include "client.hpp"
+#include "server.hpp"
 #include "utils.hpp"
+#include <thread>
 
 /**
  * Manages the network and the block chain
@@ -14,15 +13,24 @@
  */
 class Manager {
 private:
-    Network network;
+    Server _server;
+    std::thread server_thread;
+    std::vector<std::pair<Client, std::thread>> clients;
     BlockChain block_chain;
 
     // methods to generate messages to send
     Json::Value initial_message();
+    void on_message(const std::string &message);
+    void on_connect(const std::string &url);
+    void on_disconnect(const std::string &url);
 
 public:
-    Manager();
+    Manager(const std::string &user, int port);
     ~Manager();
+    void run();
+    void stop();
+    void send_message(const std::string &msg);
+    void open_connection(const std::string &url);
 };
 
 #endif
