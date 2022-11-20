@@ -25,17 +25,17 @@ Server::~Server() {
 }
 
 void Server::on_open(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("OPENED CONNECTION WITH PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("OPENED CONNECTION ON PORT `" + to_string(port) + "`");
     connections.insert(hdl);
 }
 
 void Server::on_close(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("CLOSED CONNECTION WITH PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("CLOSED CONNECTION ON PORT `" + to_string(port) + "`");
     connections.erase(hdl);
 }
 
 void Server::on_fail(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("FAILED CONNECTION WITH PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("FAILED CONNECTION ON PORT `" + to_string(port) + "`");
 }
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
