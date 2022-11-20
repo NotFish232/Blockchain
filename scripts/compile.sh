@@ -5,12 +5,15 @@ set -e
 rm -f ./bin/*
 
 for file in ./src/*.cpp; do
-	echo "Compiling \`$file\`"
-	g++ -c $file -o "./bin/$(basename $file .cpp).o" $@
+	base=$(basename $file .cpp)
+	g++ -O2 -c $file -o "./bin/$base.o" $@
+	echo "Compiled \`$base.cpp\` ($(du -hs ./bin/$base.o | cut -f1))"
 done
 
-echo "Compiling \`./main.cpp\`"
-g++ main.cpp ./bin/*.o -o "./bin/main.out" -l crypto -l jsoncpp $@
+for file in ./*.cpp; do 
+	base=$(basename $file .cpp)
+	g++ -O2 -s $file ./bin/*.o -o "./bin/$base.out" -l crypto -l jsoncpp $@ 
+	echo "Compiled \`$base.cpp\` ($(du -hs ./bin/$base.out | cut -f1))"
+done
 
-echo "Compiling \`./tests.cpp\`"
-g++ tests.cpp ./bin/*.o -o "./bin/tests.out" -l crypto -l jsoncpp $@
+echo "Total binary size: $(du -hs ./bin | cut -f1)"
