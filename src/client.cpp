@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Client::Client(const std::string &_url): url(_url) {
+Client::Client(const std::string &_url) : url(_url) {
     _client.clear_access_channels(websocketpp::log::alevel::all);
     _client.clear_error_channels(websocketpp::log::alevel::all);
     _client.init_asio();
@@ -13,11 +13,11 @@ Client::Client(const std::string &_url): url(_url) {
 
     error_code ec;
     client::connection_ptr con = _client.get_connection(url, ec);
-    if (ec) {
-        cout << "Error connecting to `" << url << "` \n";
-        cout << ec.message() << "\n";
-    } else {
+    if (!ec) {
         _client.connect(con);
+    } else {
+        DEBUG_PRINT("Error connecting to `" + url + "`");
+        DEBUG_PRINT("MESSAGE: `" + ec.message() + "`");
     }
 }
 
@@ -25,14 +25,17 @@ Client::~Client() {
 }
 
 void Client::send_message(const string &msg) {
-    DEBUG_PRINT("SENDING MESSAGE `" + msg + "` TO `" + url + "`");
-    _client.send(connection, msg, websocketpp::frame::opcode::text);
+    if (!connection.expired()) {
+        DEBUG_PRINT("SENDING MESSAGE `" + msg + "` TO `" + url + "`");
+        _client.send(connection, msg, websocketpp::frame::opcode::text);
+    } else {
+        DEBUG_PRINT("TRIED TO SEND MESSAGE `" + msg + "` BUT CONNECTION INVALID");
+    }
 }
 
 void Client::on_open(websocketpp::connection_hdl hdl) {
     connection = hdl;
     DEBUG_PRINT("OPENED CONNECTION WITH URL `" + url + "`");
-    send_message("Hello World");
     connection_callback(url);
 }
 

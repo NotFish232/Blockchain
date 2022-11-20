@@ -22,21 +22,18 @@ void Manager::send_message(const string &message) {
 void Manager::open_connection(const string &url) {
     _client.set_connection_callback([this](const string &url) { on_connect(url); });
     _client.set_disconnection_callback([this](const string &url) { on_disconnect(url); });
-    client_thread = thread([this](){_client.run();});
+    client_thread = thread([this]() { _client.run(); });
     client_thread.detach();
-    // _client.send_message("HELLO MORE WORLD!");
 }
 
 void Manager::on_message(const string &message) {
-   
 }
 
 void Manager::on_connect(const string &url) {
-   
+    _client.send_message("HELLO MORE WORLD!");
 }
 
 void Manager::on_disconnect(const string &url) {
- 
 }
 
 Json::Value Manager::initial_message() {
