@@ -17,8 +17,8 @@ Server::Server(int _port): port(_port) {
 }
 
 Server::~Server() {
-    for (websocketpp::connection_hdl con : connections) {
-        _server.close(con, websocketpp::close::status::blank, "");
+    for (auto hdl : connections) {
+        _server.close(hdl, websocketpp::close::status::blank, "");
     }
     _server.stop_listening();
     _server.stop();

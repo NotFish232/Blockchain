@@ -3,7 +3,7 @@
 using namespace std;
 
 Manager::Manager(const string &user, int port) : _server(port) {
-    _server.set_message_callback([this](const string &message) { on_message(message); });
+    _server.set_message_callback(bind(&Manager::on_message, this, _1));
 }
 Manager::~Manager() {
 }
@@ -21,8 +21,8 @@ void Manager::send_message(const string &message) {
 
 void Manager::open_connection(const string &url) {
     _client.open_connection(url);
-    _client.set_connection_callback([this](const string &url) { on_connect(url); });
-    _client.set_disconnection_callback([this](const string &url) { on_disconnect(url); });
+    _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
+    _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
     client_thread = thread([this]() { _client.run(); });
     client_thread.detach();
 }
