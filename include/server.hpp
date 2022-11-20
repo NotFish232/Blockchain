@@ -2,6 +2,7 @@
 #define SERVER_HPP
 
 #define ASIO_STANDALONE
+#include "utils.hpp"
 #include <functional>
 #include <iostream>
 #include <set>
@@ -20,6 +21,7 @@ private:
     server _server;
     con_set connections;
     func message_callback;
+    int port;
 
     void on_open(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);

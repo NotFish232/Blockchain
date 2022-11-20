@@ -2,13 +2,15 @@
 
 using namespace std;
 
-Server::Server(int port) {
-    _server.set_error_channels(websocketpp::log::elevel::all);
-    _server.set_access_channels(websocketpp::log::alevel::frame_payload);
+Server::Server(int _port): port(_port) {
+    _server.clear_access_channels(websocketpp::log::elevel::all);
+    _server.clear_error_channels(websocketpp::log::alevel::all);
+
     _server.set_open_handler(bind(&Server::on_open, this, ::_1));
     _server.set_fail_handler(bind(&Server::on_fail, this, ::_1));
     _server.set_close_handler(bind(&Server::on_close, this, ::_1));
     _server.set_message_handler(bind(&Server::on_message, this, _1, _2));
+
     _server.init_asio();
     _server.listen(port);
     _server.start_accept();
@@ -23,17 +25,21 @@ Server::~Server() {
 }
 
 void Server::on_open(websocketpp::connection_hdl hdl) {
+    DEBUG_PRINT("OPENED CONNECTION WITH PORT `" + to_string(port) + "`");
     connections.insert(hdl);
 }
 
 void Server::on_close(websocketpp::connection_hdl hdl) {
+    DEBUG_PRINT("CLOSED CONNECTION WITH PORT `" + to_string(port) + "`");
     connections.erase(hdl);
 }
 
 void Server::on_fail(websocketpp::connection_hdl hdl) {
+    DEBUG_PRINT("FAILED CONNECTION WITH PORT `" + to_string(port) + "`");
 }
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
+    DEBUG_PRINT("RECEIVED MESSAGE: `" + msg->get_payload() + "`");
     message_callback(msg->get_payload());
 }
 

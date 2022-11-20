@@ -1,10 +1,18 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <sys/stat.h>
-#include <jsoncpp/json/json.h>
 #include <fstream>
+#include <jsoncpp/json/json.h>
 #include <sstream>
+#include <sys/stat.h>
+
+#define DEBUG
+
+#ifdef DEBUG
+#define DEBUG_PRINT(x) std::cout << (x) << "\n"
+#else
+#define DEBUG_PRINT(x)
+#endif
 
 class Utils {
 private:

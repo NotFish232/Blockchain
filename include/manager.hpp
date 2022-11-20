@@ -15,7 +15,9 @@ class Manager {
 private:
     Server _server;
     std::thread server_thread;
-    std::vector<std::pair<Client, std::thread>> clients;
+    std::vector<Client> clients;
+    std::vector<std::thread> client_threads;
+    Client _client; std::thread client_thread;
     BlockChain block_chain;
 
     // methods to generate messages to send

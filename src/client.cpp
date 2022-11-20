@@ -2,12 +2,9 @@
 
 using namespace std;
 
-Client::Client(const std::string &_url) {
-    url = _url;
-
-    _client.clear_access_channels(websocketpp::log::alevel::frame_header);
-    _client.clear_access_channels(websocketpp::log::alevel::frame_payload);
-    // c.set_error_channels(websocketpp::log::elevel::none);
+Client::Client(const std::string &_url): url(_url) {
+    _client.clear_access_channels(websocketpp::log::alevel::all);
+    _client.clear_error_channels(websocketpp::log::alevel::all);
     _client.init_asio();
 
     _client.set_open_handler(bind(&Client::on_open, this, ::_1));
@@ -28,22 +25,23 @@ Client::~Client() {
 }
 
 void Client::send_message(const string &msg) {
+    DEBUG_PRINT("SENDING MESSAGE `" + msg + "` TO `" + url + "`");
     _client.send(connection, msg, websocketpp::frame::opcode::text);
 }
 
 void Client::on_open(websocketpp::connection_hdl hdl) {
     connection = hdl;
-    _client.get_alog().write(websocketpp::log::alevel::app, "Opened Connection");
+    DEBUG_PRINT("OPENED CONNECTION WITH URL `" + url + "`");
     send_message("Hello World");
     connection_callback(url);
 }
 
 void Client::on_fail(websocketpp::connection_hdl hdl) {
-    _client.get_alog().write(websocketpp::log::alevel::app, "Connection Failed");
+    DEBUG_PRINT("FAILED CONNECTION WITH URL `" + url + "`");
 }
 
 void Client::on_close(websocketpp::connection_hdl hdl) {
-    _client.get_alog().write(websocketpp::log::alevel::app, "Connection Closed");
+    DEBUG_PRINT("CLOSED CONNECTION WITH URL `" + url + "`");
     disconnection_callback(url);
 }
 

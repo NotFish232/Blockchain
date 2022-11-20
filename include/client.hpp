@@ -1,6 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
+#include "utils.hpp"
 #include <functional>
 #include <iostream>
 #include <websocketpp/client.hpp>
