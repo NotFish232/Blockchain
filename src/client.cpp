@@ -6,9 +6,9 @@ Client::Client() {
     _client.clear_access_channels(websocketpp::log::alevel::all);
     _client.clear_error_channels(websocketpp::log::alevel::all);
 
-    _client.set_open_handler(bind(&Client::on_open, this, ::_1));
-    _client.set_fail_handler(bind(&Client::on_fail, this, ::_1));
-    _client.set_close_handler(bind(&Client::on_close, this, ::_1));
+    _client.set_open_handler(bind(&Client::on_open, this, _1));
+    _client.set_fail_handler(bind(&Client::on_fail, this, _1));
+    _client.set_close_handler(bind(&Client::on_close, this, _1));
 
     _client.init_asio();
 }

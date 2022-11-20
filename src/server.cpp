@@ -2,13 +2,13 @@
 
 using namespace std;
 
-Server::Server(int _port): port(_port) {
+Server::Server(int _port) : port(_port) {
     _server.clear_access_channels(websocketpp::log::elevel::all);
     _server.clear_error_channels(websocketpp::log::alevel::all);
 
-    _server.set_open_handler(bind(&Server::on_open, this, ::_1));
-    _server.set_fail_handler(bind(&Server::on_fail, this, ::_1));
-    _server.set_close_handler(bind(&Server::on_close, this, ::_1));
+    _server.set_open_handler(bind(&Server::on_open, this, _1));
+    _server.set_fail_handler(bind(&Server::on_fail, this, _1));
+    _server.set_close_handler(bind(&Server::on_close, this, _1));
     _server.set_message_handler(bind(&Server::on_message, this, _1, _2));
 
     _server.init_asio();

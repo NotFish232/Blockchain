@@ -13,7 +13,6 @@ typedef websocketpp::client<websocketpp::config::asio> client;
 typedef websocketpp::config::asio::message_type::ptr message_ptr;
 typedef std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> con_set;
 
-using websocketpp::lib::bind;
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;
 

@@ -1,4 +1,5 @@
 #include "include/crypto.hpp"
+#include "include/utils.hpp"
 #include <chrono>
 #include <iostream>
 
@@ -41,6 +42,10 @@ int main(int argc, char **argv) {
     assert(keypair != NULL);
     Crypto::free(keypair);
 
+    assert(Utils::file_exists("./keys/" private_key_name ".pem"));
+    assert(Utils::file_exists("./keys/" public_key_name ".pem"));
+    assert(!Utils::file_exists("this file should not exist"));
+
     RSA *private_key = Crypto::import_private_key(private_key_name);
     RSA *public_key = Crypto::import_public_key(public_key_name);
     assert(private_key != NULL);
@@ -57,6 +62,10 @@ int main(int argc, char **argv) {
     assert(Crypto::export_private_key(private_key, private_key_name));
     assert(Crypto::export_public_key(public_key, public_key_name));
 
+    Crypto::free(private_key);
+    Crypto::free(public_key);
+
+
     auto end = chrono::high_resolution_clock::now();
 
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
@@ -64,8 +73,7 @@ int main(int argc, char **argv) {
     cout << "Tests passed: [";
     cout << (passing_tests == total_tests ? GREEN : RED);
     cout << passing_tests << "/" << total_tests;
-    cout << RESET << "]"
-         << "\n";
+    cout << RESET "] \n";
     cout << "Time taken: " << duration.count() << " milliseconds" << endl;
     return 0;
 }

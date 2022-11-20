@@ -24,6 +24,8 @@ private:
     void on_message(const std::string &message);
     void on_connect(const std::string &url);
     void on_disconnect(const std::string &url);
+    void load_config(const std::string &path = "./config/");
+    void save_config(const std::string &path = "./config/");
 
 public:
     Manager(const std::string &user, int port);
