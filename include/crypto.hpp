@@ -1,6 +1,7 @@
 #ifndef CRYPTO_HPP
 #define CRYPTO_HPP
 
+#include "utils.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <openssl/pem.h>
@@ -35,35 +36,34 @@ public:
      * @brief base64 encodes a string
      * @param input string to base64 encode
      * @return a base64 encoded string
-    */
+     */
     static string base64_encode(const string &input);
 
     /**
      * @brief base64 decodes a string
      * @param input base64 encoded string to decode
      * @return a base64 decode string with no whitespace
-    */
+     */
     static string base64_decode(const string &input);
 
     /**
      * @brief hashes a string with the sha256 algorithim
      * @param input string to hash
      * @return hash representation of string
-    */
+     */
     static string sha256(const string &input);
 
     /**
      * @brief frees pointer to an rsa key
      * @param keypair rsa keypair to free
-    */
+     */
     static void free(RSA *keypair);
 
     /**
      * @brief generates a RSA keypair
      * @return pointer to a RSA object holding the public and private keys
-    */
+     */
     static RSA *generate_rsa_keys();
-
 
     static char *rsa_encrypt(const char *msg, RSA *public_key);
     static char *rsa_decrypt(const char *msg, RSA *private_key);

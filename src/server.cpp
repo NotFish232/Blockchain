@@ -12,7 +12,11 @@ Server::Server(int _port) : port(_port) {
     _server.set_message_handler(bind(&Server::on_message, this, _1, _2));
 
     _server.init_asio();
-    _server.listen(port);
+    try {
+        _server.listen(port);
+    } catch (websocketpp::exception e) {
+        ERROR(e);
+    }
     _server.start_accept();
 }
 

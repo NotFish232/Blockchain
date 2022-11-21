@@ -19,8 +19,7 @@ private:
     std::thread client_thread;
     BlockChain block_chain;
 
-    // methods to generate messages to send
-    Json::Value initial_message();
+    void send_initial_message();
     void on_message(const std::string &message);
     void on_connect(const std::string &url);
     void on_disconnect(const std::string &url);

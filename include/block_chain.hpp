@@ -9,12 +9,14 @@ using namespace std;
 
 class BlockChain {
 private:
-    vector<Block *> block_chain;
+    vector<Block> blocks;
 
 public:
     BlockChain();
     ~BlockChain();
-    Block *get_block(size_t index);
+    void add_block(Block &block);
+    Block *get_block(int index);
+    friend std::ostream &operator<<(std::ostream &os, const BlockChain &block_chain);
 };
 
 #endif

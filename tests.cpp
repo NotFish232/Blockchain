@@ -5,9 +5,6 @@
 
 #define private_key_name "user0_private"
 #define public_key_name "user0_public"
-#define GREEN "\033[32m"
-#define RED "\033[31m"
-#define RESET "\033[0m"
 
 #define assert(condition)                                                                                      \
     do {                                                                                                       \
