@@ -71,6 +71,8 @@ RSA *Crypto::private_from_string(const string &key) {
 }
 
 int Crypto::export_public_key(const RSA *public_key, const string &file_name, const string &file_path) {
+    if (Utils::file_exists(file_path + file_name + ".pem"))
+        return 0;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     int result = PEM_write_bio_RSAPublicKey(file, public_key);
     BIO_free(file);
@@ -78,6 +80,8 @@ int Crypto::export_public_key(const RSA *public_key, const string &file_name, co
 }
 
 int Crypto::export_private_key(const RSA *private_key, const string &file_name, const string &file_path) {
+    if (Utils::file_exists(file_path + file_name + ".pem"))
+        return 0;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "w+");
     int result = PEM_write_bio_RSAPrivateKey(file, private_key, NULL, NULL, 0, NULL, NULL);
     BIO_free(file);
@@ -86,7 +90,7 @@ int Crypto::export_private_key(const RSA *private_key, const string &file_name, 
 
 RSA *Crypto::import_public_key(const string &file_name, const string &file_path) {
     if (!Utils::file_exists(file_path + file_name + ".pem"))
-        return NULL;
+        return nullptr;
     RSA *public_key = NULL;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPublicKey(file, &public_key, NULL, NULL);
@@ -96,7 +100,7 @@ RSA *Crypto::import_public_key(const string &file_name, const string &file_path)
 
 RSA *Crypto::import_private_key(const string &file_name, const string &file_path) {
     if (!Utils::file_exists(file_path + file_name + ".pem"))
-        return NULL;
+        return nullptr;
     RSA *private_key = NULL;
     BIO *file = BIO_new_file((file_path + file_name + ".pem").c_str(), "rt");
     PEM_read_bio_RSAPrivateKey(file, &private_key, NULL, NULL);

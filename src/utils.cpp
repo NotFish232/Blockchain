@@ -24,6 +24,6 @@ Json::Value Utils::to_json(const string &str) {
 }
 
 string Utils::to_string(const Json::Value &json) {
-    Json::FastWriter fw;
-    return fw.write(json);
+    Json::StyledWriter sw;
+    return sw.write(json);
 }

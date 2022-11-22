@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include <thread>
 
+#define DEFAULT_HOST "ws://localhost"
+
 /**
  * Manages the network and the block chain
  * provides the bulk of the logic
@@ -20,7 +22,7 @@ private:
     BlockChain block_chain;
 
     void send_initial_message();
-    void on_message(const std::string &message);
+    void on_message(const Json::Value &message);
     void on_connect(const std::string &url);
     void on_disconnect(const std::string &url);
     void load_config(const std::string &path = "./config/");

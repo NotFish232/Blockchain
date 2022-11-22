@@ -9,7 +9,7 @@
 #define DEBUG
 
 #ifdef DEBUG
-#define DEBUG_PRINT(x) std::cout << (x) << "\n"
+#define DEBUG_PRINT(x) std::cout << (x) << '\n'
 #else
 #define DEBUG_PRINT(x)
 #endif
@@ -18,7 +18,9 @@
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-#define ERROR(exception) std::cout << RED "ERROR: " RESET << exception.what() << '\n'; exit(1)
+#define ERROR(e)                                  \
+    std::cout << RED "ERROR: " RESET << e.what() << '\n'; \
+    exit(EXIT_FAILURE)
 
 class Utils {
 private:

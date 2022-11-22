@@ -8,9 +8,7 @@ Manager::Manager(const string &user, int port) : _server(port) {
     _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
     _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
 
-    auto block = Block(user, Crypto::import_public_key(user + "_public"),
-                       Crypto::import_private_key(user + "_private"));
-    block_chain.add_block(block);
+    block_chain.add_block(user, DEFAULT_HOST + to_string(port));
 }
 
 Manager::~Manager() {
@@ -39,7 +37,20 @@ void Manager::open_connection(const string &url) {
     client_thread.detach();
 }
 
-void Manager::on_message(const string &message) {
+void Manager::on_message(const Json::Value &json) {
+    if (!json.isMember("hash") || !json.isMember("signature")) {
+        DEBUG_PRINT("MALFORMED MESSAGE");
+        return;
+    }
+    RSA *public_key = Crypto::public_from_string(json["public_key"].asString());
+    Crypto::export_public_key(public_key, json["user"].asString() + "_public");
+
+    if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), public_key)) {
+        DEBUG_PRINT("SIGNATURE IS VALID");
+    } else {
+        DEBUG_PRINT("SIGNATURE DOES NOT MATCH");
+        return;
+    }
 }
 
 void Manager::on_connect(const string &url) {
@@ -52,15 +63,13 @@ void Manager::on_disconnect(const string &url) {
 void Manager::send_initial_message() {
     auto *block = block_chain.get_block(0);
     Json::Value msg;
-    msg["type"] = "init";
+    msg["type"] = "initialize_block";
     msg["user"] = block->get_username();
     msg["hash"] = block->get_hash();
-   msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
+    msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
 
-    //FIXME -> rsa key to string
-    //msg["public_key"] = Utils::read_file("./keys/" + block->get_username() + "_public.pem");
+    // FIXME -> rsa key to string
+    msg["public_key"] = Utils::read_file("./keys/" + block->get_username() + "_public.pem");
 
     _client.send_message(Utils::to_string(msg));
-
-    
 }

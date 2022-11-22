@@ -9,7 +9,7 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 
-typedef std::function<void(const std::string &)> func;
+typedef std::function<void(const Json::Value &)> msg_func;
 typedef websocketpp::server<websocketpp::config::asio> server;
 typedef std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> con_set;
 
@@ -20,7 +20,7 @@ class Server {
 private:
     server _server;
     con_set connections;
-    func message_callback;
+    msg_func message_callback;
     int port;
 
     void on_open(websocketpp::connection_hdl hdl);
@@ -31,7 +31,7 @@ private:
 public:
     Server(int port);
     ~Server();
-    void set_message_callback(const func &callback);
+    void set_message_callback(const msg_func &callback);
     void run();
 };
 

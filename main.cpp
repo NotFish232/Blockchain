@@ -11,7 +11,6 @@ int main(int argc, char **argv) {
     Manager manager(USER, PORT);
     manager.run();
     manager.open_connection("ws://localhost:8080");
-
     while (true) { }
     return 0;
 }

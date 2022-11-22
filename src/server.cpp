@@ -43,14 +43,15 @@ void Server::on_fail(websocketpp::connection_hdl hdl) {
 }
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
-    DEBUG_PRINT("RECEIVED MESSAGE: `" + msg->get_payload() + "`");
-    message_callback(msg->get_payload());
+    Json::Value json = Utils::to_json(msg->get_payload());
+    DEBUG_PRINT("RECEIVED MESSAGE: `" + Utils::to_string(json) + "`");
+    message_callback(json);
 }
 
 void Server::run() {
     _server.run();
 }
 
-void Server::set_message_callback(const func &callback) {
+void Server::set_message_callback(const msg_func &callback) {
     message_callback = callback;
 }
