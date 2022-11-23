@@ -56,6 +56,7 @@ int main(int argc, char **argv) {
     string signed_msg = Crypto::sign_message(msg, private_key);
     assert(Crypto::verify_signature(msg, signed_msg, public_key));
 
+
     assert(Crypto::export_private_key(private_key, private_key_name));
     assert(Crypto::export_public_key(public_key, public_key_name));
 

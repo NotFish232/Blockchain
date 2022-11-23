@@ -15,8 +15,10 @@ private:
 public:
     Block(const std::string &username, const std::string &url);
     ~Block();
-    std::string get_hash();
-    std::string get_username();
+    std::string get_hash() const;
+    std::string get_username() const;
+    std::string get_url() const;
+    std::string get_str_public() const;
     RSA *get_public();
     RSA *get_private();
     friend std::ostream &operator<<(std::ostream &os, const Block &block);

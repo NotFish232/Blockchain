@@ -23,51 +23,60 @@ void Client::open_connection(const string &url) {
         _client.connect(con);
     } else {
         DEBUG_PRINT("Error connecting to `" + url + "`");
-        DEBUG_PRINT("MESSAGE: `" + ec.message() + "`");
+        DEBUG_PRINT("Error code: `" + ec.message() + "`");
     }
 }
 
-void Client::send_message(const string &msg) {
+void Client::send_all_message(const string &msg) {
     for (auto hdl : connections) {
         string url = get_url(hdl);
-        DEBUG_PRINT("SENDING MESSAGE `" + msg + "` TO `" + url + "`");
+        DEBUG_PRINT("Sending message `" + msg + "` TO `" + url + "`");
         _client.send(hdl, msg, websocketpp::frame::opcode::text);
     }
 }
 
-string Client::get_url(websocketpp::connection_hdl hdl) {
+void Client::send_message(const string &msg, const string &url) {
+    auto pos = find_if(connections.begin(), connections.end(), [&](const auto &hdl) {
+        return url == get_url(hdl);
+    });
+    DEBUG_PRINT("Sending message `" + msg + "` TO `" + url + "`");
+    _client.send(*pos, msg, websocketpp::frame::opcode::text);
+
+}
+
+string Client::get_url(const websocketpp::connection_hdl &hdl) {
     auto con = _client.get_con_from_hdl(hdl);
-    return con->get_host() + ":" + to_string(con->get_port());
+    return con->get_uri()->str();
 }
 
 void Client::on_open(websocketpp::connection_hdl hdl) {
     connections.insert(hdl);
     string url = get_url(hdl);
-    DEBUG_PRINT("OPENED CONNECTION WITH URL `" + url + "`");
+    DEBUG_PRINT("Opened connection with url `" + url + "`");
     connection_callback(url);
 }
 
 void Client::on_close(websocketpp::connection_hdl hdl) {
     connections.erase(hdl);
     string url = get_url(hdl);
-    DEBUG_PRINT("CLOSED CONNECTION WITH URL `" + url + "`");
+    DEBUG_PRINT("Closed connection with url `" + url + "`");
     disconnection_callback(url);
 }
 
 void Client::on_fail(websocketpp::connection_hdl hdl) {
     connections.erase(hdl);
     string url = get_url(hdl);
-    DEBUG_PRINT("FAILED CONNECTION WITH URL `" + url + "`");
+    DEBUG_PRINT("Failed connection with url `" + url + "`");
 }
 
 void Client::run() {
     _client.run();
 }
 
-void Client::set_connection_callback(const func &callback) {
+void Client::set_connection_callback(const con_func &callback) {
     connection_callback = callback;
 }
 
-void Client::set_disconnection_callback(const func &callback) {
+void Client::set_disconnection_callback(const con_func &callback) {
     disconnection_callback = callback;
 }

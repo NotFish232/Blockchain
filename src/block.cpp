@@ -13,12 +13,20 @@ Block::~Block() {
     if (private_key != nullptr)
         Crypto::free(private_key);
 }
-string Block::get_hash() {
+string Block::get_hash() const {
     return Crypto::sha256(username + url);
 }
 
-string Block::get_username() {
+string Block::get_username() const {
     return username;
+}
+
+string Block::get_url() const {
+    return url;
+}
+
+string Block::get_str_public() const {
+    return Utils::read_file("./keys/" + username + "_public.pem");
 }
 
 RSA *Block::get_public() {

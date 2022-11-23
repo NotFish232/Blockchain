@@ -2,16 +2,19 @@
 
 using namespace std;
 
-Manager::Manager(const string &user, int port) : _server(port) {
+Manager::Manager(const string &username, int port, bool no_overwrite) : _server(port) {
+
+    this->no_overwrite = no_overwrite;
     // block 0 in the block chain must be you
     _server.set_message_callback(bind(&Manager::on_message, this, _1));
     _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
     _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
 
-    block_chain.add_block(user, DEFAULT_HOST + to_string(port));
+    block_chain.add_block(username, DEFAULT_HOST + to_string(port));
 }
 
 Manager::~Manager() {
+    DEBUG_PRINT("manager destructor called");
 }
 
 void Manager::run() {
@@ -19,16 +22,29 @@ void Manager::run() {
     server_thread.detach();
 }
 
-void Manager::stop() {
+void Manager::save_public_key(const string &username, RSA *public_key) {
+    if (Utils::file_exists("./keys/" + username + "_public.pem")) {
+        if (no_overwrite)
+            return;
+        cout << "Warning: file `" + username + "_public.pem already exists \n";
+        cout << "Would you like to overwrite it? (y / n) ";
+        string input;
+        cin >> input;
+        // if input is yes to overwrite, exit function
+        if (input == "y")
+            Crypto::export_public_key(public_key, username + "_public");
+    } else {
+        Crypto::export_public_key(public_key, username + "_public");
+    }
 }
 
 void Manager::send_message(const string &message) {
     Json::Value msg;
     msg["type"] = "message";
-    msg["user"] = block_chain.get_block(0)->get_username();
+    msg["username"] = block_chain.get_block(0)->get_username();
     msg["body"] = message;
     msg["signature"] = "";
-    _client.send_message(Utils::to_string(msg));
+    _client.send_all_message(Utils::to_string(msg));
 }
 
 void Manager::open_connection(const string &url) {
@@ -38,18 +54,52 @@ void Manager::open_connection(const string &url) {
 }
 
 void Manager::on_message(const Json::Value &json) {
-    if (!json.isMember("hash") || !json.isMember("signature")) {
-        DEBUG_PRINT("MALFORMED MESSAGE");
+    if (!json.isMember("type")) {
+        DEBUG_PRINT("Malformed message (doesn't contain type");
         return;
     }
-    RSA *public_key = Crypto::public_from_string(json["public_key"].asString());
-    Crypto::export_public_key(public_key, json["user"].asString() + "_public");
 
-    if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), public_key)) {
-        DEBUG_PRINT("SIGNATURE IS VALID");
+    string type = json["type"].asString();
+
+    if (type == "initialize_block") {
+        if (!json.isMember("username") || !json.isMember("public_key") ||
+            !json.isMember("hash") || !json.isMember("signature")) {
+            DEBUG_PRINT("Malformed message (doesn't contain username, public key, hash, or signature)");
+            return;
+        }
+        string username = json["username"].asString();
+
+        RSA *public_key = Crypto::public_from_string(json["public_key"].asString());
+
+        if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), public_key)) {
+            DEBUG_PRINT("Valid signature");
+        } else {
+            DEBUG_PRINT("Invalid Signature");
+            // if signature isn't valid don't add the block
+            return;
+        }
+
+        save_public_key(username, public_key);
+
+        Crypto::free(public_key);
+
+        block_chain.add_block(username, json["url"].asString());
+
+        send_sync_message();
+    } else if (type == "sync_blocks") {
+        if (!json.isMember("blocks")) {
+            DEBUG_PRINT("Malformed message (doesn't contain blocks)");
+            return;
+        }
+        for (const auto &json_block : json["blocks"]) {
+            string username = json_block["username"].asString();
+            RSA *public_key = Crypto::public_from_string(json_block["public_key"].asString());
+            save_public_key(username, public_key);
+            Crypto::free(public_key);
+            block_chain.add_block(username, json_block["url"].asString());
+        }
     } else {
-        DEBUG_PRINT("SIGNATURE DOES NOT MATCH");
-        return;
+        DEBUG_PRINT("Unrecognized type: `" + type + "`");
     }
 }
 
@@ -61,15 +111,41 @@ void Manager::on_disconnect(const string &url) {
 }
 
 void Manager::send_initial_message() {
+    // initial message to add yourself to the blockchain
     auto *block = block_chain.get_block(0);
     Json::Value msg;
     msg["type"] = "initialize_block";
-    msg["user"] = block->get_username();
+    msg["username"] = block->get_username();
     msg["hash"] = block->get_hash();
+    msg["url"] = block->get_url();
     msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
+    msg["public_key"] = block->get_str_public();
 
-    // FIXME -> rsa key to string
-    msg["public_key"] = Utils::read_file("./keys/" + block->get_username() + "_public.pem");
+    _client.send_all_message(Utils::to_string(msg));
+}
 
-    _client.send_message(Utils::to_string(msg));
+void Manager::send_sync_message() {
+    // when you receieve a block
+    // everybody should send a message with all the blocks in their blockchain
+    // make sure everybody is all synced up
+
+    Json::Value msg;
+    msg["type"] = "sync_blocks";
+
+    Json::Value blocks;
+
+    for (int i = 0; i < block_chain.get_block_count(); ++i) {
+        auto *block = block_chain.get_block(i);
+        Json::Value json_block;
+
+        json_block["username"] = block->get_username();
+        json_block["url"] = block->get_url();
+        json_block["public_key"] = block->get_str_public();
+
+        blocks[i] = json_block;
+    }
+
+    msg["blocks"] = blocks;
+
+    _client.send_all_message(Utils::to_string(msg));
 }

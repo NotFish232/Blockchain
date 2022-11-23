@@ -8,22 +8,20 @@
 
 #define DEBUG
 
-#ifdef DEBUG
-#define DEBUG_PRINT(x) std::cout << (x) << '\n'
-#else
-#define DEBUG_PRINT(x)
-#endif
-
+#define BLUE "\033[34m"
 #define GREEN "\033[32m"
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-#define ERROR(e)                                  \
-    std::cout << RED "ERROR: " RESET << e.what() << '\n'; \
-    exit(EXIT_FAILURE)
+#ifdef DEBUG
+#define DEBUG_PRINT(x)                     \
+    std::cout << BLUE "[Debug]" RESET " (" \
+              << basename(__FILE__) << ", line " << __LINE__ << ") " << (x) << '\n'
+#else
+#define DEBUG_PRINT(x)
+#endif
 
 class Utils {
-private:
 public:
     static bool file_exists(const std::string &path);
     static std::string read_file(const std::string &path);

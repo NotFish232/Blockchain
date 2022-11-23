@@ -1,5 +1,7 @@
 #!/bin/bash
 
-chmod +x ./scripts/compile.sh
-./scripts/compile.sh
-./bin/main.out
+if [ ! -f ./bin/main.out ]; then
+    /bin/bash ./scripts/compile.sh
+fi
+
+./bin/main.out $BLOCKCHAIN_USER $BLOCKCHAIN_PORT 

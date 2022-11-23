@@ -2,7 +2,9 @@
 
 using namespace std;
 
-Server::Server(int _port) : port(_port) {
+Server::Server(int port) {
+    this->port = port;
+
     _server.clear_access_channels(websocketpp::log::elevel::all);
     _server.clear_error_channels(websocketpp::log::alevel::all);
 
@@ -10,14 +12,6 @@ Server::Server(int _port) : port(_port) {
     _server.set_fail_handler(bind(&Server::on_fail, this, _1));
     _server.set_close_handler(bind(&Server::on_close, this, _1));
     _server.set_message_handler(bind(&Server::on_message, this, _1, _2));
-
-    _server.init_asio();
-    try {
-        _server.listen(port);
-    } catch (websocketpp::exception e) {
-        ERROR(e);
-    }
-    _server.start_accept();
 }
 
 Server::~Server() {
@@ -29,26 +23,30 @@ Server::~Server() {
 }
 
 void Server::on_open(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("OPENED CONNECTION ON PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("Opened connection on port `" + to_string(port) + "`");
     connections.insert(hdl);
 }
 
 void Server::on_close(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("CLOSED CONNECTION ON PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("Closed connection on port `" + to_string(port) + "`");
     connections.erase(hdl);
 }
 
 void Server::on_fail(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("FAILED CONNECTION ON PORT `" + to_string(port) + "`");
+    DEBUG_PRINT("Failed connection on port `" + to_string(port) + "`");
 }
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
     Json::Value json = Utils::to_json(msg->get_payload());
-    DEBUG_PRINT("RECEIVED MESSAGE: `" + Utils::to_string(json) + "`");
+    DEBUG_PRINT("Received message: `" + Utils::to_string(json) + "`");
     message_callback(json);
 }
 
 void Server::run() {
+    _server.set_reuse_addr(true);
+    _server.init_asio();
+    _server.listen(port);
+    _server.start_accept();
     _server.run();
 }
 
