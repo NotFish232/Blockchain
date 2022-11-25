@@ -16,7 +16,6 @@ Manager::Manager(const string &username, const string &url, bool no_overwrite)
 }
 
 Manager::~Manager() {
-    DEBUG_PRINT("manager destructor called");
 }
 
 void Manager::run() {
@@ -86,16 +85,10 @@ void Manager::on_message(const Json::Value &json) {
             // if signature isn't valid don't add the block
             return;
         }
-
-        DEBUG_PRINT("trying to save public key");
-        save_public_key(username, public_key);
-        DEBUG_PRINT("saved public key");
-
+        save_public_key(username, public_key);;
         Crypto::free(public_key);
-        DEBUG_PRINT("freed public key");
 
         block_chain.add_block(username, json["url"].asString());
-        DEBUG_PRINT("added block");
 
         send_sync_message();
     } else if (type == "sync_blocks") {
