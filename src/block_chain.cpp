@@ -1,6 +1,7 @@
 #include "../include/block_chain.hpp"
 
 BlockChain::BlockChain() {
+    blocks.reserve(20);
 }
 
 BlockChain::~BlockChain() {
@@ -21,6 +22,7 @@ void BlockChain::add_block(const string &username, const string &url) {
 
     // if username doesn't already exist in block, add it to chain
     if (!block_exists(username)) {
+        DEBUG_PRINT("Adding block to chain, with username `" + username + "`");
         blocks.emplace_back(username, url);
     }
 }

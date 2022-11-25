@@ -23,6 +23,7 @@
 
 class Utils {
 public:
+    static int get_port_from_url(const std::string &url);
     static bool file_exists(const std::string &path);
     static std::string read_file(const std::string &path);
     static Json::Value to_json(const std::string &str);

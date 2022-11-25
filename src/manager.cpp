@@ -2,7 +2,9 @@
 
 using namespace std;
 
-Manager::Manager(const string &username, int port, bool no_overwrite) : _server(port) {
+Manager::Manager(const string &username, const string &url, bool no_overwrite)
+    : _server(Utils::get_port_from_url(url)) {
+    // remove port from url
 
     this->no_overwrite = no_overwrite;
     // block 0 in the block chain must be you
@@ -10,7 +12,7 @@ Manager::Manager(const string &username, int port, bool no_overwrite) : _server(
     _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
     _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
 
-    block_chain.add_block(username, DEFAULT_HOST + to_string(port));
+    block_chain.add_block(username, url);
 }
 
 Manager::~Manager() {
@@ -23,17 +25,23 @@ void Manager::run() {
 }
 
 void Manager::save_public_key(const string &username, RSA *public_key) {
+    DEBUG_PRINT("Saving public key for `" + username + "`");
     if (Utils::file_exists("./keys/" + username + "_public.pem")) {
-        if (no_overwrite)
+        if (no_overwrite) {
+            DEBUG_PRINT("Key `" + username + ".pem` already exists. aborting");
             return;
+        }
         cout << "Warning: file `" + username + "_public.pem already exists \n";
         cout << "Would you like to overwrite it? (y / n) ";
         string input;
         cin >> input;
-        // if input is yes to overwrite, exit function
-        if (input == "y")
+        // if input is yes to overwrite, export anyways
+        if (input == "y") {
+            DEBUG_PRINT("Saving key `" + username + ".pem`");
             Crypto::export_public_key(public_key, username + "_public");
+        }
     } else {
+        DEBUG_PRINT("Saving key `" + username + ".pem`");
         Crypto::export_public_key(public_key, username + "_public");
     }
 }
@@ -72,18 +80,22 @@ void Manager::on_message(const Json::Value &json) {
         RSA *public_key = Crypto::public_from_string(json["public_key"].asString());
 
         if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), public_key)) {
-            DEBUG_PRINT("Valid signature");
+            DEBUG_PRINT("Signature of message is valid");
         } else {
-            DEBUG_PRINT("Invalid Signature");
+            DEBUG_PRINT("Signature of message is not valid");
             // if signature isn't valid don't add the block
             return;
         }
 
+        DEBUG_PRINT("trying to save public key");
         save_public_key(username, public_key);
+        DEBUG_PRINT("saved public key");
 
         Crypto::free(public_key);
+        DEBUG_PRINT("freed public key");
 
         block_chain.add_block(username, json["url"].asString());
+        DEBUG_PRINT("added block");
 
         send_sync_message();
     } else if (type == "sync_blocks") {
@@ -98,6 +110,7 @@ void Manager::on_message(const Json::Value &json) {
             Crypto::free(public_key);
             block_chain.add_block(username, json_block["url"].asString());
         }
+        DEBUG_PRINT("Finished syncing blocks");
     } else {
         DEBUG_PRINT("Unrecognized type: `" + type + "`");
     }
@@ -128,6 +141,8 @@ void Manager::send_sync_message() {
     // when you receieve a block
     // everybody should send a message with all the blocks in their blockchain
     // make sure everybody is all synced up
+
+    DEBUG_PRINT("trying to send sync message");
 
     Json::Value msg;
     msg["type"] = "sync_blocks";

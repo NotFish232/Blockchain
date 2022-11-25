@@ -3,8 +3,8 @@
 #include <chrono>
 #include <iostream>
 
-#define private_key_name "user0_private"
-#define public_key_name "user0_public"
+#define private_key_name "test_keys_private"
+#define public_key_name "test_keys_public"
 
 #define assert(condition)                                                                                      \
     do {                                                                                                       \
@@ -37,6 +37,9 @@ int main(int argc, char **argv) {
 
     RSA *keypair = Crypto::generate_rsa_keys();
     assert(keypair != NULL);
+    assert(Crypto::export_private_key(keypair, private_key_name));
+    assert(Crypto::export_public_key(keypair, public_key_name));
+
     Crypto::free(keypair);
 
     assert(Utils::file_exists("./keys/" private_key_name ".pem"));
@@ -45,20 +48,16 @@ int main(int argc, char **argv) {
 
     RSA *private_key = Crypto::import_private_key(private_key_name);
     RSA *public_key = Crypto::import_public_key(public_key_name);
-    assert(private_key != NULL);
-    assert(public_key != NULL);
 
-    char *encrypted_msg = Crypto::rsa_encrypt(msg, public_key);
-    char *decrypted_msg = Crypto::rsa_decrypt(encrypted_msg, private_key);
-    assert(strcmp(msg, decrypted_msg) == 0);
+    assert(private_key != nullptr);
+    assert(public_key != nullptr);
 
-    delete[] encrypted_msg, decrypted_msg;
+    char* encrypted_msg = Crypto::rsa_encrypt(s_msg, public_key);
+    string decrypted_msg = Crypto::rsa_decrypt(encrypted_msg, private_key);
+    assert(s_msg == decrypted_msg);
+
     string signed_msg = Crypto::sign_message(msg, private_key);
     assert(Crypto::verify_signature(msg, signed_msg, public_key));
-
-
-    assert(Crypto::export_private_key(private_key, private_key_name));
-    assert(Crypto::export_public_key(public_key, public_key_name));
 
     Crypto::free(private_key);
     Crypto::free(public_key);

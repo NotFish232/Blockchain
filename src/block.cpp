@@ -9,6 +9,7 @@ Block::Block(const std::string &username, const std::string &url) {
     private_key = Crypto::import_private_key(username + "_private");
 }
 Block::~Block() {
+    DEBUG_PRINT("in block destructor");
     Crypto::free(public_key);
     if (private_key != nullptr)
         Crypto::free(private_key);

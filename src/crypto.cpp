@@ -30,13 +30,13 @@ RSA *Crypto::generate_rsa_keys() {
     return RSA_check_key(keypair) == 1 ? keypair : NULL;
 }
 
-char *Crypto::rsa_encrypt(const char *msg, RSA *public_key) {
+char *Crypto::rsa_encrypt(const string &msg, RSA *public_key) {
     uchar *out_buf = new uchar[RSA_size(public_key)];
-    int result = RSA_public_encrypt(RSA_size(public_key), (uchar *)msg, out_buf, public_key, RSA_NO_PADDING);
+    int result = RSA_public_encrypt(RSA_size(public_key), (uchar *)msg.c_str(), out_buf, public_key, RSA_NO_PADDING);
     return result != -1 ? (char *)out_buf : NULL;
 }
 
-char *Crypto::rsa_decrypt(const char *msg, RSA *private_key) {
+string Crypto::rsa_decrypt(const char *msg, RSA *private_key) {
     uchar *out_buf = new uchar[RSA_size(private_key)];
     int result = RSA_private_decrypt(RSA_size(private_key), (uchar *)msg, out_buf, private_key, RSA_NO_PADDING);
     return result != -1 ? (char *)out_buf : NULL;

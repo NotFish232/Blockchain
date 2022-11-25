@@ -35,7 +35,7 @@ private:
     void save_config(const std::string &path = "./config/");
 
 public:
-    Manager(const std::string &user, int port, bool no_overwrite = true);
+    Manager(const string &username, const string &url, bool no_overwrite = true);
     ~Manager();
     void run();
     void send_message(const std::string &msg);
