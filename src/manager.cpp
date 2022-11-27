@@ -126,13 +126,13 @@ void Manager::on_message(const Json::Value &json) {
 void Manager::on_connect(const string &url) {
     // weird
     // not on every connect idt
-    send_initial_message();
+    send_initial_message(url);
 }
 
 void Manager::on_disconnect(const string &url) {
 }
 
-void Manager::send_initial_message() {
+void Manager::send_initial_message(const string &url) {
     // initial message to add yourself to the blockchain
     auto *block = block_chain.get_block(0);
     Json::Value msg;
@@ -143,7 +143,7 @@ void Manager::send_initial_message() {
     msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
     msg["public_key"] = block->get_str_public();
 
-    _client.send_all_message(Utils::to_string(msg));
+    _client.send_message(Utils::to_string(msg), url);
 }
 
 void Manager::send_sync_message() {

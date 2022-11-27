@@ -6,9 +6,9 @@ Server::Server(int port) {
     this->port = port;
 
     _server.clear_access_channels(websocketpp::log::elevel::all);
-    //_server.clear_error_channels(websocketpp::log::alevel::all);
+    _server.clear_error_channels(websocketpp::log::alevel::all);
     //_server.set_access_channels(websocketpp::log::alevel::all);
-    _server.set_error_channels(websocketpp::log::alevel::all);
+    //_server.set_error_channels(websocketpp::log::alevel::all);
 
     _server.set_open_handler(bind(&Server::on_open, this, _1));
     _server.set_fail_handler(bind(&Server::on_fail, this, _1));
@@ -17,8 +17,9 @@ Server::Server(int port) {
 }
 
 Server::~Server() {
-    for (auto hdl : connections) {
-        _server.close(hdl, websocketpp::close::status::blank, "");
+    for (const auto &hdl : connections) {
+        _server.pause_reading(hdl);
+        _server.close(hdl, websocketpp::close::status::normal, "");
     }
     _server.stop_listening();
     _server.stop();

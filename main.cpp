@@ -23,11 +23,6 @@ int main(int argc, char **argv) {
 
     if (url != connection_url)
         manager.open_connection(connection_url);
-    // this_thread::sleep_for(chrono::milliseconds(1000));
-
-    while (true) {
-
-    }
-    DEBUG_PRINT("End of main");
+    this_thread::sleep_for(chrono::milliseconds(5000));
     return 0;
 }

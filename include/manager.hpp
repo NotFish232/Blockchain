@@ -7,8 +7,6 @@
 #include "utils.hpp"
 #include <websocketpp/common/thread.hpp>
 
-#define DEFAULT_HOST "ws://localhost"
-
 /**
  * Manages the network and the block chain
  * provides the bulk of the logic
@@ -26,7 +24,7 @@ private:
     BlockChain block_chain;
 
     void save_public_key(const string &username, RSA *public_key);
-    void send_initial_message();
+    void send_initial_message(const string &url);
     void send_sync_message();
     void on_message(const Json::Value &message);
     void on_connect(const string &url);
