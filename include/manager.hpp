@@ -5,7 +5,7 @@
 #include "client.hpp"
 #include "server.hpp"
 #include "utils.hpp"
-#include <thread>
+#include <websocketpp/common/thread.hpp>
 
 #define DEFAULT_HOST "ws://localhost"
 
@@ -20,9 +20,9 @@ private:
 */
     bool no_overwrite;
     Server _server;
-    std::thread server_thread;
+    thread server_thread;
     Client _client;
-    std::thread client_thread;
+    thread client_thread;
     BlockChain block_chain;
 
     void save_public_key(const string &username, RSA *public_key);

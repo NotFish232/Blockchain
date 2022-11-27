@@ -63,5 +63,3 @@ for i in `seq 1 $n`; do
 done
 
 docker logs -f "user1_container"
-echo -e "\n\n\n"
-docker logs -f "user2_container"

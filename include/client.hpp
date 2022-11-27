@@ -8,6 +8,8 @@
 #include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
 
+#define WEBSOCKETPP_STRICT_MASKING
+
 typedef std::function<void(const string &)> con_func;
 typedef websocketpp::client<websocketpp::config::asio> client;
 typedef websocketpp::config::asio::message_type::ptr message_ptr;
@@ -33,7 +35,7 @@ public:
     /**
      * @brief tries to open connection to url
      * @param url url to try and connect o
-    */
+     */
     void open_connection(const string &url);
     void send_all_message(const string &msg);
     void send_message(const string &msg, const string &url);

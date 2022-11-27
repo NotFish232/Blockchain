@@ -114,7 +114,7 @@ void Manager::on_message(const Json::Value &json) {
             save_public_key(username, public_key);
             Crypto::free(public_key);
 
-            open_connection(json["url"].asString());
+            open_connection(json_block["url"].asString());
             block_chain.add_block(username, json_block["url"].asString());
         }
         DEBUG_PRINT("Finished syncing blocks");

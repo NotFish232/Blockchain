@@ -1,13 +1,15 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#define ASIO_STANDALONE
 #include "utils.hpp"
 #include <functional>
 #include <iostream>
 #include <set>
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
+
+#define ASIO_STANDALONE
+#define WEBSOCKETPP_STRICT_MASKING
 
 typedef std::function<void(const Json::Value &)> msg_func;
 typedef websocketpp::server<websocketpp::config::asio> server;
