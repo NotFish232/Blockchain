@@ -1,4 +1,4 @@
-###Implementation of a Blockchain in c++ for the Conrad 2022 challenge.
+### Implementation of a Blockchain in c++ for the Conrad 2022 challenge.
 \
 To run the demo, run ```/bin/bash ./scripts/demo.sh```
 \
