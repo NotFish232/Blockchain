@@ -27,7 +27,6 @@ void Manager::save_public_key(const string &username, RSA *public_key) {
     DEBUG_PRINT("Saving public key for `" + username + "`");
     if (Utils::file_exists("./keys/" + username + "_public.pem")) {
         if (no_overwrite) {
-            DEBUG_PRINT("Key `" + username + ".pem` already exists. aborting");
             return;
         }
         cout << "Warning: file `" + username + "_public.pem already exists \n";
@@ -36,11 +35,9 @@ void Manager::save_public_key(const string &username, RSA *public_key) {
         cin >> input;
         // if input is yes to overwrite, export anyways
         if (input == "y") {
-            DEBUG_PRINT("Saving key `" + username + ".pem`");
             Crypto::export_public_key(public_key, username + "_public");
         }
     } else {
-        DEBUG_PRINT("Saving key `" + username + ".pem`");
         Crypto::export_public_key(public_key, username + "_public");
     }
 }
@@ -76,6 +73,11 @@ void Manager::on_message(const Json::Value &json) {
         }
         string username = json["username"].asString();
 
+        if (block_chain.block_exists(username)) {
+            DEBUG_PRINT("Block `" + username + "` already exists");
+            return;
+        }
+
         RSA *public_key = Crypto::public_from_string(json["public_key"].asString());
 
         if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), public_key)) {
@@ -83,11 +85,15 @@ void Manager::on_message(const Json::Value &json) {
         } else {
             DEBUG_PRINT("Signature of message is not valid");
             // if signature isn't valid don't add the block
+            Crypto::free(public_key);
             return;
         }
-        save_public_key(username, public_key);;
+
+        save_public_key(username, public_key);
+
         Crypto::free(public_key);
 
+        open_connection(json["url"].asString());
         block_chain.add_block(username, json["url"].asString());
 
         send_sync_message();
@@ -98,9 +104,17 @@ void Manager::on_message(const Json::Value &json) {
         }
         for (const auto &json_block : json["blocks"]) {
             string username = json_block["username"].asString();
+
+            if (block_chain.block_exists(username)) {
+                DEBUG_PRINT("Block `" + username + "` already exists");
+                continue;
+            }
+
             RSA *public_key = Crypto::public_from_string(json_block["public_key"].asString());
             save_public_key(username, public_key);
             Crypto::free(public_key);
+
+            open_connection(json["url"].asString());
             block_chain.add_block(username, json_block["url"].asString());
         }
         DEBUG_PRINT("Finished syncing blocks");
@@ -110,6 +124,8 @@ void Manager::on_message(const Json::Value &json) {
 }
 
 void Manager::on_connect(const string &url) {
+    // weird
+    // not on every connect idt
     send_initial_message();
 }
 
@@ -134,8 +150,6 @@ void Manager::send_sync_message() {
     // when you receieve a block
     // everybody should send a message with all the blocks in their blockchain
     // make sure everybody is all synced up
-
-    DEBUG_PRINT("trying to send sync message");
 
     Json::Value msg;
     msg["type"] = "sync_blocks";

@@ -14,9 +14,12 @@ private:
 public:
     BlockChain();
     ~BlockChain();
-    bool block_exists(const std::string &username) const;
+    bool block_exists(const string &username) const;
     int get_block_count() const;
-    void add_block(const std::string &username, const std::string &url);
+    /**
+     * @brief block must not already exist if method is called
+    */
+    void add_block(const string &username, const string &url);
     Block *get_block(int index);
     friend std::ostream &operator<<(std::ostream &os, const BlockChain &block_chain);
 };

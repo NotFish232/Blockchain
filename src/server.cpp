@@ -6,7 +6,9 @@ Server::Server(int port) {
     this->port = port;
 
     _server.clear_access_channels(websocketpp::log::elevel::all);
-    _server.clear_error_channels(websocketpp::log::alevel::all);
+    //_server.clear_error_channels(websocketpp::log::alevel::all);
+    //_server.set_access_channels(websocketpp::log::alevel::all);
+    _server.set_error_channels(websocketpp::log::alevel::all);
 
     _server.set_open_handler(bind(&Server::on_open, this, _1));
     _server.set_fail_handler(bind(&Server::on_fail, this, _1));
@@ -23,17 +25,17 @@ Server::~Server() {
 }
 
 void Server::on_open(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("Opened connection on port `" + to_string(port) + "`");
+    DEBUG_PRINT("Opened connection on port " + to_string(port));
     connections.insert(hdl);
 }
 
 void Server::on_close(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("Closed connection on port `" + to_string(port) + "`");
+    DEBUG_PRINT("Closed connection on port " + to_string(port));
     connections.erase(hdl);
 }
 
 void Server::on_fail(websocketpp::connection_hdl hdl) {
-    DEBUG_PRINT("Failed connection on port `" + to_string(port) + "`");
+    DEBUG_PRINT("Failed connection on port " + to_string(port));
 }
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
@@ -43,6 +45,7 @@ void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg
 }
 
 void Server::run() {
+    DEBUG_PRINT("Running server on port " + to_string(port));
     _server.set_reuse_addr(true);
     _server.init_asio();
     _server.listen(port);

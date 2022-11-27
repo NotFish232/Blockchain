@@ -25,21 +25,21 @@ private:
     std::thread client_thread;
     BlockChain block_chain;
 
-    void save_public_key(const std::string &username, RSA *public_key);
+    void save_public_key(const string &username, RSA *public_key);
     void send_initial_message();
     void send_sync_message();
     void on_message(const Json::Value &message);
-    void on_connect(const std::string &url);
-    void on_disconnect(const std::string &url);
-    void load_config(const std::string &path = "./config/");
-    void save_config(const std::string &path = "./config/");
+    void on_connect(const string &url);
+    void on_disconnect(const string &url);
+    void load_config(const string &path = "./config/");
+    void save_config(const string &path = "./config/");
 
 public:
     Manager(const string &username, const string &url, bool no_overwrite = true);
     ~Manager();
     void run();
-    void send_message(const std::string &msg);
-    void open_connection(const std::string &url);
+    void send_message(const string &msg);
+    void open_connection(const string &url);
 };
 
 #endif

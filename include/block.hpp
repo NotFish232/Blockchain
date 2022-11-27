@@ -8,17 +8,19 @@ class Block {
 private:
     RSA *public_key, *private_key;
     // if its not first block this field is empty
-    std::string username;
-    std::string url;
-    std::string location;
+    string username;
+    string url;
+    string description;
+    string location;
 
 public:
-    Block(const std::string &username, const std::string &url);
+    Block(const string &username, const string &url, const string &decription = "");
     ~Block();
-    std::string get_hash() const;
-    std::string get_username() const;
-    std::string get_url() const;
-    std::string get_str_public() const;
+    string get_hash() const;
+    string get_username() const;
+    string get_url() const;
+    string get_description() const;
+    string get_str_public() const;
     RSA *get_public();
     RSA *get_private();
     friend std::ostream &operator<<(std::ostream &os, const Block &block);

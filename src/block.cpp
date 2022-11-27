@@ -2,9 +2,10 @@
 
 using namespace std;
 
-Block::Block(const std::string &username, const std::string &url) {
+Block::Block(const std::string &username, const std::string &url, const string &description) {
     this->username = username;
     this->url = url;
+    this->description = description;
     public_key = Crypto::import_public_key(username + "_public");
     private_key = Crypto::import_private_key(username + "_private");
 }
@@ -23,6 +24,10 @@ string Block::get_username() const {
 
 string Block::get_url() const {
     return url;
+}
+
+string Block::get_description() const {
+    return description;
 }
 
 string Block::get_str_public() const {

@@ -20,15 +20,12 @@ int BlockChain::get_block_count() const {
 
 void BlockChain::add_block(const string &username, const string &url) {
 
-    // if username doesn't already exist in block, add it to chain
-    if (!block_exists(username)) {
-        blocks.emplace_back(username, url);
-        DEBUG_PRINT("Added block to chain, with username `" + username + "`");
-    }
+    blocks.emplace_back(username, url);
+    DEBUG_PRINT("Added block to block chain, with username `" + username + "`");
 }
 
 Block *BlockChain::get_block(int index) {
-    return &blocks[index];
+    return index < blocks.size() ? &blocks[index] : nullptr;
 }
 
 ostream &operator<<(ostream &os, const BlockChain &block_chain) {

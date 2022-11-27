@@ -8,8 +8,6 @@
 #include <openssl/rsa.h>
 #include <string>
 
-using std::string;
-
 typedef unsigned char uchar;
 
 class Crypto {

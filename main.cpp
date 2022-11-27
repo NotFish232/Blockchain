@@ -16,13 +16,18 @@ int main(int argc, char **argv) {
         connection_url = argv[3];
     }
 
+    DEBUG_PRINT("Starting block chain ( Username - `" + user + "`, Url - `" + url + "`, Connection url - `" + connection_url + "` )");
+
     Manager manager(user, url);
     manager.run();
 
-    manager.open_connection(connection_url);
-    //this_thread::sleep_for(chrono::milliseconds(1000));
+    if (url != connection_url)
+        manager.open_connection(connection_url);
+    // this_thread::sleep_for(chrono::milliseconds(1000));
+
     while (true) {
-        // this_thread::sleep_for(chrono::milliseconds(1000));
+
     }
+    DEBUG_PRINT("End of main");
     return 0;
 }
