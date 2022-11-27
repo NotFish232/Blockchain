@@ -4,9 +4,11 @@ set -e
 
 n=${1:-5}
 
+shift
+
 /bin/bash ./scripts/generate_keys.sh $n
 
-/bin/bash ./scripts/compile.sh
+/bin/bash ./scripts/compile.sh $@
 
 cd config
 
@@ -62,4 +64,4 @@ for i in `seq 1 $n`; do
     fi
 done
 
-docker logs -f "user1_container"
+docker logs --follow "user1_container"

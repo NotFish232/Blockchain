@@ -48,7 +48,7 @@ void Manager::send_message(const string &message) {
     msg["username"] = block_chain.get_block(0)->get_username();
     msg["body"] = message;
     msg["signature"] = "";
-    _client.send_all_message(Utils::to_string(msg));
+    _client.send_message_to_all(Utils::to_string(msg));
 }
 
 void Manager::open_connection(const string &url) {
@@ -65,7 +65,8 @@ void Manager::on_message(const Json::Value &json) {
 
     string type = json["type"].asString();
 
-    if (type == "initialize_block") {
+    if (type == "message") {
+    } else if (type == "initialize_block") {
         if (!json.isMember("username") || !json.isMember("public_key") ||
             !json.isMember("hash") || !json.isMember("signature")) {
             DEBUG_PRINT("Malformed message (doesn't contain username, public key, hash, or signature)");
@@ -169,5 +170,5 @@ void Manager::send_sync_message() {
 
     msg["blocks"] = blocks;
 
-    _client.send_all_message(Utils::to_string(msg));
+    _client.send_message_to_all(Utils::to_string(msg));
 }

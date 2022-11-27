@@ -37,7 +37,7 @@ public:
      * @param url url to try and connect o
      */
     void open_connection(const string &url);
-    void send_all_message(const string &msg);
+    void send_message_to_all(const string &msg);
     void send_message(const string &msg, const string &url);
     void set_connection_callback(const con_func &callback);
     void set_disconnection_callback(const con_func &callback);

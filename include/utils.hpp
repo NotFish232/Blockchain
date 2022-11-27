@@ -6,8 +6,6 @@
 #include <sstream>
 #include <sys/stat.h>
 
-#define DEBUG
-
 #define BLUE "\033[34m"
 #define GREEN "\033[32m"
 #define RED "\033[31m"

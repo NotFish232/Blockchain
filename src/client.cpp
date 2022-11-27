@@ -35,7 +35,7 @@ void Client::open_connection(const string &url) {
     }
 }
 
-void Client::send_all_message(const string &msg) {
+void Client::send_message_to_all(const string &msg) {
     for (const auto &hdl : connections) {
         string url = get_url_from_hdl(hdl);
         DEBUG_PRINT("Sending message `" + msg + "` TO `" + url + "`");
