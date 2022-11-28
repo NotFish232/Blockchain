@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         connection_url = argv[3];
     }
 
-    DEBUG_PRINT("Starting block chain ( Username - `" + user + "`, Url - `" + url + "`, Connection url - `" + connection_url + "` )");
+    DEBUG_PRINT("Starting block chain ( Username - " + user + ", Url - " + url + ", Connection url - " + connection_url + " )");
 
     RSA *keypair = Crypto::generate_rsa_keys();
     Crypto::export_private_key(keypair, user + "_private");

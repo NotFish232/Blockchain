@@ -41,7 +41,7 @@ void Server::on_fail(websocketpp::connection_hdl hdl) {
 
 void Server::on_message(websocketpp::connection_hdl hdl, server::message_ptr msg) {
     Json::Value json = Utils::to_json(msg->get_payload());
-    DEBUG_PRINT("Received message: `" + Utils::to_string(json) + "`");
+    DEBUG_PRINT("Received message: " + Utils::to_string(json));
     message_callback(json);
 }
 

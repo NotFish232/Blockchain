@@ -24,12 +24,12 @@ void Manager::run() {
 }
 
 void Manager::save_public_key(const string &username, RSA *public_key) {
-    DEBUG_PRINT("Saving public key for `" + username + "`");
+    DEBUG_PRINT("Saving public key for " + username);
     if (Utils::file_exists("./keys/" + username + "_public.pem")) {
         if (no_overwrite) {
             return;
         }
-        cout << "Warning: file `" + username + "_public.pem already exists \n";
+        cout << "Warning: file " + username + "_public.pem already exists \n";
         cout << "Would you like to overwrite it? (y / n) ";
         string input;
         cin >> input;
@@ -60,7 +60,7 @@ void Manager::on_message(const Json::Value &json) {
         string url = json["url"].asString();
 
         if (block_chain.block_exists(username)) {
-            DEBUG_PRINT("Block `" + username + "` already exists");
+            DEBUG_PRINT("Block " + username + " already exists");
             return;
         }
 
@@ -93,7 +93,7 @@ void Manager::on_message(const Json::Value &json) {
             string url = json_block["url"].asString();
 
             if (block_chain.block_exists(username)) {
-                DEBUG_PRINT("Block `" + username + "` already exists");
+                DEBUG_PRINT("Block " + username + " already exists");
                 continue;
             }
 
@@ -127,10 +127,10 @@ void Manager::on_message(const Json::Value &json) {
             return;
         }
 
-        DEBUG_PRINT("Updating location to `" + json["location"].asString() + "`");
+        DEBUG_PRINT("Updating " + username + " location to " + json["location"].asString());
         block->set_location(json["location"].asString());
     } else {
-        DEBUG_PRINT("Unrecognized message type: `" + type + "`");
+        DEBUG_PRINT("Unrecognized message type: " + type);
     }
 }
 

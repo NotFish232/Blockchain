@@ -24,14 +24,14 @@ void Client::open_connection(const string &url) {
         if (url == get_url_from_hdl(hdl))
             return;
     }
-    DEBUG_PRINT("Trying to open a connection with url `" + url + "`");
+    DEBUG_PRINT("Trying to open a connection with url " + url);
     error_code ec;
     client::connection_ptr con = _client.get_connection(url, ec);
     if (!ec) {
         _client.connect(con);
     } else {
-        DEBUG_PRINT("Error connecting to `" + url + "`");
-        DEBUG_PRINT("Error: `" + ec.message() + "`");
+        DEBUG_PRINT("Error connecting to " + url);
+        DEBUG_PRINT("Error: " + ec.message());
     }
 }
 
@@ -41,18 +41,18 @@ void Client::send_message_to_all(const string &msg) {
     // eliminate excessive debug prints by not printing new message for each url
     string urls = "";
     for (const auto &hdl: connections) {
-        urls += "`" + get_url_from_hdl(hdl) + "`, ";
+        urls += get_url_from_hdl(hdl) + ", ";
     }
     urls = urls.substr(0, urls.length() - 2);
-    DEBUG_PRINT("Sending message `" + msg + "` TO " + urls);
+    DEBUG_PRINT("Sending message " + msg + " TO " + urls);
 
     for (const auto &hdl : connections) {
         string url = get_url_from_hdl(hdl);
         error_code ec;
         _client.send(hdl, msg, websocketpp::frame::opcode::text, ec);
         if (ec) {
-            DEBUG_PRINT("Failed sending message to `" + url + "`");
-            DEBUG_PRINT("Error: `" + ec.message() + "`");
+            DEBUG_PRINT("Failed sending message to " + url);
+            DEBUG_PRINT("Error: " + ec.message());
         }
     }
 }
@@ -61,7 +61,7 @@ void Client::send_message(const string &msg, const string &url) {
     auto pos = find_if(connections.begin(), connections.end(), [&](const auto &hdl) {
         return url == get_url_from_hdl(hdl);
     });
-    DEBUG_PRINT("Sending message `" + msg + "` TO `" + url + "`");
+    DEBUG_PRINT("Sending message " + msg + " TO " + url);
     _client.send(*pos, msg, websocketpp::frame::opcode::text);
 }
 
@@ -73,21 +73,21 @@ string Client::get_url_from_hdl(const websocketpp::connection_hdl &hdl) {
 void Client::on_open(websocketpp::connection_hdl hdl) {
     connections.insert(hdl);
     string url = get_url_from_hdl(hdl);
-    DEBUG_PRINT("Opened connection with url `" + url + "`");
+    DEBUG_PRINT("Opened connection with url " + url);
     connection_callback(url);
 }
 
 void Client::on_close(websocketpp::connection_hdl hdl) {
     connections.erase(hdl);
     string url = get_url_from_hdl(hdl);
-    DEBUG_PRINT("Closed connection with url `" + url + "`");
+    DEBUG_PRINT("Closed connection with url " + url);
     disconnection_callback(url);
 }
 
 void Client::on_fail(websocketpp::connection_hdl hdl) {
     connections.erase(hdl);
     string url = get_url_from_hdl(hdl);
-    DEBUG_PRINT("Failed connection with url `" + url + "`");
+    DEBUG_PRINT("Failed connection with url " + url);
 }
 
 void Client::run() {
