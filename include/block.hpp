@@ -20,6 +20,8 @@ public:
     string get_username() const;
     string get_url() const;
     string get_description() const;
+    string get_location() const;
+    void set_location(const string &location);
     string get_str_public() const;
     RSA *get_public();
     RSA *get_private();

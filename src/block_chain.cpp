@@ -18,14 +18,23 @@ int BlockChain::get_block_count() const {
     return blocks.size();
 }
 
-void BlockChain::add_block(const string &username, const string &url) {
+void BlockChain::add_block(const string &username, const string &url, const string &description) {
 
-    blocks.emplace_back(username, url);
+    blocks.emplace_back(username, url, description);
     DEBUG_PRINT("Added block to block chain, with username `" + username + "`");
 }
 
 Block *BlockChain::get_block(int index) {
     return index < blocks.size() ? &blocks[index] : nullptr;
+}
+
+Block *BlockChain::get_block_by_username(const string &username) {
+    for (auto &block: blocks) {
+        if (block.get_username() == username) {
+            return &block;
+        }
+    }
+    return nullptr;
 }
 
 ostream &operator<<(ostream &os, const BlockChain &block_chain) {

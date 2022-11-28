@@ -2,12 +2,14 @@
 
 using namespace std;
 
-int Utils::get_port_from_url(const string &url) {
-    int port_start = url.find_last_of(":") + 1;
-    int port_end = url.find("/", port_start);
-    if (port_end == string::npos)
-        port_end = url.length();
-    return stoi(url.substr(port_start, port_end - port_start));
+Json::Value Utils::load_json(const string &file_name, const string &file_path) {
+    if (!file_exists(file_path + file_name + ".json"))
+        return Json::Value();
+    fstream f(file_path + file_name + ".json", ios::in);
+    Json::Value json;
+    f >> json;
+    f.close();
+    return json;
 }
 
 bool Utils::file_exists(const string &path) {
@@ -34,4 +36,12 @@ Json::Value Utils::to_json(const string &str) {
 string Utils::to_string(const Json::Value &json) {
     Json::StyledWriter sw;
     return sw.write(json);
+}
+
+int Utils::get_port_from_url(const string &url) {
+    int port_start = url.find_last_of(":") + 1;
+    int port_end = url.find("/", port_start);
+    if (port_end == string::npos)
+        port_end = url.length();
+    return stoi(url.substr(port_start, port_end - port_start));
 }

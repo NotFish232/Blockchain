@@ -2,8 +2,8 @@
 
 using namespace std;
 
-Manager::Manager(const string &username, const string &url, bool no_overwrite)
-    : _server(Utils::get_port_from_url(url)) {
+Manager::Manager(const Block *block, bool no_overwrite)
+    : _server(Utils::get_port_from_url(block->get_url())) {
     // remove port from url
 
     this->no_overwrite = no_overwrite;
@@ -12,7 +12,7 @@ Manager::Manager(const string &username, const string &url, bool no_overwrite)
     _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
     _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
 
-    block_chain.add_block(username, url);
+    block_chain.add_block(block->get_username(), block->get_url(), block->get_description());
 }
 
 Manager::~Manager() {
@@ -41,22 +41,6 @@ void Manager::save_public_key(const string &username, RSA *public_key) {
         Crypto::export_public_key(public_key, username + "_public");
     }
 }
-
-void Manager::send_message(const string &message) {
-    Json::Value msg;
-    msg["type"] = "message";
-    msg["username"] = block_chain.get_block(0)->get_username();
-    msg["body"] = message;
-    msg["signature"] = "";
-    _client.send_message_to_all(Utils::to_string(msg));
-}
-
-void Manager::open_connection(const string &url) {
-    _client.open_connection(url);
-    client_thread = thread([this]() { _client.run(); });
-    client_thread.detach();
-}
-
 void Manager::on_message(const Json::Value &json) {
     if (!json.isMember("type")) {
         DEBUG_PRINT("Malformed message (doesn't contain type");
@@ -73,6 +57,7 @@ void Manager::on_message(const Json::Value &json) {
             return;
         }
         string username = json["username"].asString();
+        string url = json["url"].asString();
 
         if (block_chain.block_exists(username)) {
             DEBUG_PRINT("Block `" + username + "` already exists");
@@ -94,8 +79,8 @@ void Manager::on_message(const Json::Value &json) {
 
         Crypto::free(public_key);
 
-        open_connection(json["url"].asString());
-        block_chain.add_block(username, json["url"].asString());
+        open_connection(url);
+        block_chain.add_block(username, url, json["description"].asString());
 
         send_sync_message();
     } else if (type == "sync_blocks") {
@@ -105,6 +90,7 @@ void Manager::on_message(const Json::Value &json) {
         }
         for (const auto &json_block : json["blocks"]) {
             string username = json_block["username"].asString();
+            string url = json_block["url"].asString();
 
             if (block_chain.block_exists(username)) {
                 DEBUG_PRINT("Block `" + username + "` already exists");
@@ -115,18 +101,68 @@ void Manager::on_message(const Json::Value &json) {
             save_public_key(username, public_key);
             Crypto::free(public_key);
 
-            open_connection(json_block["url"].asString());
-            block_chain.add_block(username, json_block["url"].asString());
+            open_connection(url);
+            block_chain.add_block(username, url, json_block["description"].asString());
         }
         DEBUG_PRINT("Finished syncing blocks");
+    } else if (type == "update_location") {
+        if (!json.isMember("username") || !json.isMember("location") ||
+            !json.isMember("hash") || !json.isMember("signature")) {
+            DEBUG_PRINT("Malformed message (doesn't contain username, location, hash, or signature)");
+            return;
+        }
+
+        string username = json["username"].asString();
+
+        auto *block = block_chain.get_block_by_username(username);
+
+        if (block == nullptr) {
+            return;
+        }
+
+        if (Crypto::verify_signature(json["hash"].asString(), json["signature"].asString(), block->get_public())) {
+            DEBUG_PRINT("Signature of message is valid");
+        } else {
+            DEBUG_PRINT("Signature of message is not valid");
+            return;
+        }
+
+        block->set_location(json["location"].asString());
     } else {
         DEBUG_PRINT("Unrecognized type: `" + type + "`");
     }
 }
 
+void Manager::send_message(const string &message) {
+    auto *block = block_chain.get_block(0);
+    Json::Value msg;
+    msg["type"] = "message";
+    msg["username"] = block->get_username();
+    msg["body"] = message;
+    msg["signature"] = Crypto::sign_message(message, block->get_private());
+    _client.send_message_to_all(Utils::to_string(msg));
+}
+
+void Manager::open_connection(const string &url) {
+    _client.open_connection(url);
+    client_thread = thread([this]() { _client.run(); });
+    client_thread.detach();
+}
+
+void Manager::update_location(const string &location) {
+    auto *block = block_chain.get_block(0);
+    block->set_location(location);
+
+    Json::Value msg;
+    msg["type"] = "update_location";
+    msg["username"] = block->get_username();
+    msg["location"] = block->get_location();
+    msg["hash"] = block->get_hash();
+    msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
+    _client.send_message_to_all(Utils::to_string(msg));
+}
+
 void Manager::on_connect(const string &url) {
-    // weird
-    // not on every connect idt
     send_initial_message(url);
 }
 
@@ -136,11 +172,13 @@ void Manager::on_disconnect(const string &url) {
 void Manager::send_initial_message(const string &url) {
     // initial message to add yourself to the blockchain
     auto *block = block_chain.get_block(0);
+
     Json::Value msg;
     msg["type"] = "initialize_block";
     msg["username"] = block->get_username();
-    msg["hash"] = block->get_hash();
     msg["url"] = block->get_url();
+    msg["description"] = block->get_description();
+    msg["hash"] = block->get_hash();
     msg["signature"] = Crypto::sign_message(block->get_hash(), block->get_private());
     msg["public_key"] = block->get_str_public();
 
@@ -163,6 +201,7 @@ void Manager::send_sync_message() {
 
         json_block["username"] = block->get_username();
         json_block["url"] = block->get_url();
+        json_block["description"] = block->get_description();
         json_block["public_key"] = block->get_str_public();
 
         blocks[i] = json_block;

@@ -6,8 +6,6 @@ n=${1:-5}
 
 shift
 
-/bin/bash ./scripts/generate_keys.sh $n
-
 /bin/bash ./scripts/compile.sh $@
 
 cd config

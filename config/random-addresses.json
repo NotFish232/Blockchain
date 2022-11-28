@@ -1,0 +1,602 @@
+[
+    {
+        "address": "875 Latouche Street",
+        "area_code": "99501",
+        "latitude": 61.2132529,
+        "longitude": -149.8608243
+    },
+    {
+        "address": "6231 North 67th Avenue",
+        "area_code": "85301",
+        "latitude": 33.5279666,
+        "longitude": -112.2022551
+    },
+    {
+        "address": "1267 Martin Street",
+        "area_code": "37203",
+        "latitude": 36.1404897,
+        "longitude": -86.7695179
+    },
+    {
+        "address": "232 Maine Avenue",
+        "area_code": "32401",
+        "latitude": 30.1527033,
+        "longitude": -85.63207129999999
+    },
+    {
+        "address": "4 Glen Circle",
+        "area_code": "21060",
+        "latitude": 39.157751,
+        "longitude": -76.60633399999999
+    },
+    {
+        "address": "3162 Martin Luther King Junior Boulevard",
+        "area_code": "72704",
+        "latitude": 36.05233310000001,
+        "longitude": -94.2056987
+    },
+    {
+        "address": "270 Chrissy's Court",
+        "area_code": "05443",
+        "latitude": 44.1710043,
+        "longitude": -73.1065617
+    },
+    {
+        "address": "700 Winston Place",
+        "area_code": "99504",
+        "latitude": 61.215882,
+        "longitude": -149.737337
+    },
+    {
+        "address": "14 School Street",
+        "area_code": "02053",
+        "latitude": 42.141711,
+        "longitude": -71.395014
+    },
+    {
+        "address": "2622 Martin Luther King Junior Boulevard",
+        "area_code": "72704",
+        "latitude": 36.053922,
+        "longitude": -94.1973008
+    },
+    {
+        "address": "165 Saint John Street",
+        "area_code": "06040",
+        "latitude": 41.7762171,
+        "longitude": -72.5410548
+    },
+    {
+        "address": "1903 Bashford Manor Lane",
+        "area_code": "40218",
+        "latitude": 38.1977059,
+        "longitude": -85.675288
+    },
+    {
+        "address": "7529 West 72nd Avenue",
+        "area_code": "80003",
+        "latitude": 39.8276128,
+        "longitude": -105.0799305
+    },
+    {
+        "address": "107 Guaymas Place",
+        "area_code": "95616",
+        "latitude": 38.567048,
+        "longitude": -121.746046
+    },
+    {
+        "address": "622 Thomas Street",
+        "area_code": "95776",
+        "latitude": 38.672731,
+        "longitude": -121.76065
+    },
+    {
+        "address": "7 Underwood Place Northwest",
+        "area_code": "20012",
+        "latitude": 38.969351,
+        "longitude": -77.009722
+    },
+    {
+        "address": "3034 Mica Street",
+        "area_code": "72704",
+        "latitude": 36.0807929,
+        "longitude": -94.2066449
+    },
+    {
+        "address": "1770 Colony Way",
+        "area_code": "72704",
+        "latitude": 36.0867,
+        "longitude": -94.229754
+    },
+    {
+        "address": "1745 T Street Southeast",
+        "area_code": "20020",
+        "latitude": 38.867033,
+        "longitude": -76.979235
+    },
+    {
+        "address": "711 Parker Street",
+        "area_code": "01028",
+        "latitude": 42.082262,
+        "longitude": -72.488113
+    },
+    {
+        "address": "4 Old Colony Way",
+        "area_code": "02664",
+        "latitude": 41.697168,
+        "longitude": -70.189992
+    },
+    {
+        "address": "1643 Oxford Street",
+        "area_code": "94709",
+        "latitude": 37.877894,
+        "longitude": -122.266436
+    },
+    {
+        "address": "5144 Cattail Court",
+        "area_code": "72701",
+        "latitude": 36.041153,
+        "longitude": -94.087419
+    },
+    {
+        "address": "6114 West Glenn Drive",
+        "area_code": "85301",
+        "latitude": 33.5401454,
+        "longitude": -112.1912722
+    },
+    {
+        "address": "3729 East Mission Boulevard",
+        "area_code": "72703",
+        "latitude": 36.0919353,
+        "longitude": -94.10654219999999
+    },
+    {
+        "address": "2409 Research Boulevard",
+        "area_code": "80526",
+        "latitude": 40.554586,
+        "longitude": -105.087852
+    },
+    {
+        "address": "816 West 19th Avenue",
+        "area_code": "99503",
+        "latitude": 61.203221,
+        "longitude": -149.898655
+    },
+    {
+        "address": "2905 Stonebridge Court",
+        "area_code": "73071",
+        "latitude": 35.183319,
+        "longitude": -97.40210499999999
+    },
+    {
+        "address": "65 Bay Drive",
+        "area_code": "21403",
+        "latitude": 38.937493,
+        "longitude": -76.45638699999999
+    },
+    {
+        "address": "60 Desousa Drive",
+        "area_code": "06040",
+        "latitude": 41.7409259,
+        "longitude": -72.5619104
+    },
+    {
+        "address": "6007 Applegate Lane",
+        "area_code": "40219",
+        "latitude": 38.1343013,
+        "longitude": -85.6498512
+    },
+    {
+        "address": "109 Summit Street",
+        "area_code": "05401",
+        "latitude": 44.4729749,
+        "longitude": -73.2026566
+    },
+    {
+        "address": "8502 Madrone Avenue",
+        "area_code": "40258",
+        "latitude": 38.1286407,
+        "longitude": -85.8678042
+    },
+    {
+        "address": "1230 Stafford Drive",
+        "area_code": "36117",
+        "latitude": 32.32403,
+        "longitude": -86.14840099999999
+    },
+    {
+        "address": "210 Green Road",
+        "area_code": "06042",
+        "latitude": 41.7909099,
+        "longitude": -72.51195129999999
+    },
+    {
+        "address": "5306 Ritchie Highway",
+        "area_code": "21225",
+        "latitude": 39.221978,
+        "longitude": -76.614183
+    },
+    {
+        "address": "637 Britannia Drive",
+        "area_code": "94591",
+        "latitude": 38.10476999999999,
+        "longitude": -122.193849
+    },
+    {
+        "address": "1364 Capri Drive",
+        "area_code": "32405",
+        "latitude": 30.2207276,
+        "longitude": -85.6808795
+    },
+    {
+        "address": "1427 South Carolina Avenue Southeast",
+        "area_code": "20003",
+        "latitude": 38.886615,
+        "longitude": -76.9845349
+    },
+    {
+        "address": "2027 North Shannon Drive",
+        "area_code": "72703",
+        "latitude": 36.0892622,
+        "longitude": -94.17333020000001
+    },
+    {
+        "address": "201 West Montgomery Cross Road",
+        "area_code": "31406",
+        "latitude": 31.9996137,
+        "longitude": -81.13121
+    },
+    {
+        "address": "159 Downey Drive",
+        "area_code": "06040",
+        "latitude": 41.7800126,
+        "longitude": -72.5754309
+    },
+    {
+        "address": "65 Jones Lane",
+        "area_code": "35115",
+        "latitude": 33.096851,
+        "longitude": -86.846577
+    },
+    {
+        "address": "11655 West 81st Avenue",
+        "area_code": "80005",
+        "latitude": 39.84356820000001,
+        "longitude": -105.1297584
+    },
+    {
+        "address": "49548 Road 200",
+        "area_code": "93645",
+        "latitude": 37.153463,
+        "longitude": -119.648192
+    },
+    {
+        "address": "5420 Sunset Avenue",
+        "area_code": "32408",
+        "latitude": 30.145603,
+        "longitude": -85.755095
+    },
+    {
+        "address": "125 John Street",
+        "area_code": "95060",
+        "latitude": 36.950901,
+        "longitude": -122.046881
+    },
+    {
+        "address": "3140 Commander Drive",
+        "area_code": "40220",
+        "latitude": 38.215781,
+        "longitude": -85.653981
+    },
+    {
+        "address": "3500 Blanchard Drive Southwest",
+        "area_code": "20032",
+        "latitude": 38.8388931,
+        "longitude": -77.02011139999999
+    },
+    {
+        "address": "2755 Country Drive",
+        "area_code": "94536",
+        "latitude": 37.557882,
+        "longitude": -121.986823
+    },
+    {
+        "address": "8821 West Myrtle Avenue",
+        "area_code": "85305",
+        "latitude": 33.5404296,
+        "longitude": -112.2488391
+    },
+    {
+        "address": "5461 West Shades Valley Drive",
+        "area_code": "36108",
+        "latitude": 32.296422,
+        "longitude": -86.34280299999999
+    },
+    {
+        "address": "10262 West 59th Avenue",
+        "area_code": "80004",
+        "latitude": 39.803718,
+        "longitude": -105.111974
+    },
+    {
+        "address": "132 Laurel Green Court",
+        "area_code": "31419",
+        "latitude": 32.0243075,
+        "longitude": -81.2468102
+    },
+    {
+        "address": "242 North Ash Street",
+        "area_code": "81521",
+        "latitude": 39.161544,
+        "longitude": -108.725378
+    },
+    {
+        "address": "5601 West Crocus Drive",
+        "area_code": "85306",
+        "latitude": 33.6152469,
+        "longitude": -112.179737
+    },
+    {
+        "address": "2811 Battery Place Northwest",
+        "area_code": "20016",
+        "latitude": 38.9256252,
+        "longitude": -77.0982646
+    },
+    {
+        "address": "12245 West 71st Place",
+        "area_code": "80004",
+        "latitude": 39.8267078,
+        "longitude": -105.1366798
+    },
+    {
+        "address": "5385 Iris Street",
+        "area_code": "80002",
+        "latitude": 39.794498,
+        "longitude": -105.106056
+    },
+    {
+        "address": "18 Densmore Drive",
+        "area_code": "05452",
+        "latitude": 44.492953,
+        "longitude": -73.101883
+    },
+    {
+        "address": "1608 Gales Street Northeast",
+        "area_code": "20002",
+        "latitude": 38.8985542,
+        "longitude": -76.9813444
+    },
+    {
+        "address": "2900 North Western Avenue",
+        "area_code": "73012",
+        "latitude": 35.687568,
+        "longitude": -97.53227299999999
+    },
+    {
+        "address": "308 Woodleaf Court",
+        "area_code": "21061",
+        "latitude": 39.1425931,
+        "longitude": -76.6238441
+    },
+    {
+        "address": "2010 Rising Hill Drive",
+        "area_code": "73071",
+        "latitude": 35.177281,
+        "longitude": -97.411869
+    },
+    {
+        "address": "5722 8th Street Northwest",
+        "area_code": "20011",
+        "latitude": 38.959305,
+        "longitude": -77.024463
+    },
+    {
+        "address": "913 Fallview Trail",
+        "area_code": "37211",
+        "latitude": 36.02419100000001,
+        "longitude": -86.718305
+    },
+    {
+        "address": "21950 Arnold Center Road",
+        "area_code": "90810",
+        "latitude": 33.8272706,
+        "longitude": -118.2302826
+    },
+    {
+        "address": "154 Boca Lagoon Drive",
+        "area_code": "32408",
+        "latitude": 30.171012,
+        "longitude": -85.77501099999999
+    },
+    {
+        "address": "1420 Turtleback Trail",
+        "area_code": "32413",
+        "latitude": 30.281084,
+        "longitude": -85.9677169
+    },
+    {
+        "address": "1840 Nobel Place",
+        "area_code": "40216",
+        "latitude": 38.198892,
+        "longitude": -85.8090129
+    },
+    {
+        "address": "7431 Candace Way",
+        "area_code": "40214",
+        "latitude": 38.142768,
+        "longitude": -85.7717132
+    },
+    {
+        "address": "264 Crest Drive",
+        "area_code": "99669",
+        "latitude": 60.497608,
+        "longitude": -151.080848
+    },
+    {
+        "address": "5628 West Tonopah Drive",
+        "area_code": "85308",
+        "latitude": 33.6710947,
+        "longitude": -112.1810955
+    },
+    {
+        "address": "33 Linscott Road",
+        "area_code": "02043",
+        "latitude": 42.2257391,
+        "longitude": -70.8828675
+    },
+    {
+        "address": "9 Brooklyn Street",
+        "area_code": "05488",
+        "latitude": 44.924599,
+        "longitude": -73.12809399999999
+    },
+    {
+        "address": "188 River Road",
+        "area_code": "05452",
+        "latitude": 44.478846,
+        "longitude": -73.058294
+    },
+    {
+        "address": "80 North East Street",
+        "area_code": "01040",
+        "latitude": 42.2041219,
+        "longitude": -72.5977704
+    },
+    {
+        "address": "1004 Bellflower Street",
+        "area_code": "94551",
+        "latitude": 37.710745,
+        "longitude": -121.732765
+    },
+    {
+        "address": "1536 North Main Street",
+        "area_code": "93906",
+        "latitude": 36.7122208,
+        "longitude": -121.6522485
+    },
+    {
+        "address": "6601 West Ocotillo Road",
+        "area_code": "85301",
+        "latitude": 33.53433,
+        "longitude": -112.2011246
+    },
+    {
+        "address": "1208 Elkader Court North",
+        "area_code": "37013",
+        "latitude": 36.080049,
+        "longitude": -86.60116099999999
+    },
+    {
+        "address": "945 South 5th Street",
+        "area_code": "40203",
+        "latitude": 38.2402351,
+        "longitude": -85.76031119999999
+    },
+    {
+        "address": "4438 Maine Avenue",
+        "area_code": "91706",
+        "latitude": 34.093409,
+        "longitude": -117.959953
+    },
+    {
+        "address": "1515 Chandlee Avenue",
+        "area_code": "32405",
+        "latitude": 30.176365,
+        "longitude": -85.666253
+    },
+    {
+        "address": "4840 Reservoir Road Northwest",
+        "area_code": "20007",
+        "latitude": 38.9158933,
+        "longitude": -77.0962873
+    },
+    {
+        "address": "1513 Cathy Street",
+        "area_code": "31415",
+        "latitude": 32.067416,
+        "longitude": -81.125331
+    },
+    {
+        "address": "58 North U.S.A Drive",
+        "area_code": "72701",
+        "latitude": 35.994914,
+        "longitude": -94.185867
+    },
+    {
+        "address": "11 Meeting Place Circle",
+        "area_code": "01921",
+        "latitude": 42.6946519,
+        "longitude": -71.0008529
+    },
+    {
+        "address": "915 Heath Drive",
+        "area_code": "36108",
+        "latitude": 32.363883,
+        "longitude": -86.333247
+    },
+    {
+        "address": "2426 East Onyx Trail",
+        "area_code": "72701",
+        "latitude": 36.065707,
+        "longitude": -94.1276125
+    },
+    {
+        "address": "10826 Pointe Royal Drive",
+        "area_code": "93311",
+        "latitude": 35.2930007,
+        "longitude": -119.1225908
+    },
+    {
+        "address": "3301 Old Muldoon Road",
+        "area_code": "99504",
+        "latitude": 61.1908348,
+        "longitude": -149.7340096
+    },
+    {
+        "address": "31353 Santa Elena Way",
+        "area_code": "94587",
+        "latitude": 37.593981,
+        "longitude": -122.059762
+    },
+    {
+        "address": "8521 Crystal Street",
+        "area_code": "99502",
+        "latitude": 61.143426,
+        "longitude": -149.94665
+    },
+    {
+        "address": "153 Atlantic Avenue",
+        "area_code": "01952",
+        "latitude": 42.8339101,
+        "longitude": -70.81575269999999
+    },
+    {
+        "address": "5615 West Villa Maria Drive",
+        "area_code": "85308",
+        "latitude": 33.650988,
+        "longitude": -112.180624
+    },
+    {
+        "address": "361 Parmley Lane",
+        "area_code": "37207",
+        "latitude": 36.2446128,
+        "longitude": -86.8197718
+    },
+    {
+        "address": "4738 Mallard Common",
+        "area_code": "94555",
+        "latitude": 37.5666441,
+        "longitude": -122.0444344
+    },
+    {
+        "address": "1101 Lotus Avenue",
+        "area_code": "21061",
+        "latitude": 39.191982,
+        "longitude": -76.6525659
+    },
+    {
+        "address": "2209 June Drive",
+        "area_code": "37214",
+        "latitude": 36.16848,
+        "longitude": -86.695241
+    }
+]

@@ -6,6 +6,7 @@ Block::Block(const std::string &username, const std::string &url, const string &
     this->username = username;
     this->url = url;
     this->description = description;
+    
     public_key = Crypto::import_public_key(username + "_public");
     private_key = Crypto::import_private_key(username + "_private");
 }
@@ -28,6 +29,14 @@ string Block::get_url() const {
 
 string Block::get_description() const {
     return description;
+}
+
+string Block::get_location() const {
+    return location;
+}
+
+void Block::set_location(const string &location) {
+    this->location = location;
 }
 
 string Block::get_str_public() const {

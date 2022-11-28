@@ -11,10 +11,9 @@
 #define RED "\033[31m"
 #define RESET "\033[0m"
 
-#ifdef DEBUG
-
+#if defined DEBUG || defined debug
 #define DEBUG_PRINT(x)                                                   \
-    std::cout << (stringstream()                                    \
+    std::cout << (stringstream()                                         \
                   << BLUE "[Debug]" RESET " ("                           \
                   << basename(__FILE__) << ", line " << __LINE__ << ") " \
                   << (x) << '\n')                                        \
@@ -27,6 +26,7 @@ using std::string;
 
 class Utils {
 public:
+    static Json::Value load_json(const string &file_name, const string &file_path = "./config/");
     static int get_port_from_url(const string &url);
     static bool file_exists(const string &path);
     static string read_file(const string &path);

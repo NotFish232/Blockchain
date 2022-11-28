@@ -33,11 +33,12 @@ private:
     void save_config(const string &path = "./config/");
 
 public:
-    Manager(const string &username, const string &url, bool no_overwrite = true);
+    Manager(const Block *block, bool no_overwrite = true);
     ~Manager();
     void run();
     void send_message(const string &msg);
     void open_connection(const string &url);
+    void update_location(const string &location);
 };
 
 #endif
