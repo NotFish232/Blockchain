@@ -36,9 +36,18 @@ void Client::open_connection(const string &url) {
 }
 
 void Client::send_message_to_all(const string &msg) {
+
+    // get string with all urls seperated by commas
+    // eliminate excessive debug prints by not printing new message for each url
+    string urls = "";
+    for (const auto &hdl: connections) {
+        urls += "`" + get_url_from_hdl(hdl) + "`, ";
+    }
+    urls = urls.substr(0, urls.length() - 2);
+    DEBUG_PRINT("Sending message `" + msg + "` TO " + urls);
+
     for (const auto &hdl : connections) {
         string url = get_url_from_hdl(hdl);
-        DEBUG_PRINT("Sending message `" + msg + "` TO `" + url + "`");
         error_code ec;
         _client.send(hdl, msg, websocketpp::frame::opcode::text, ec);
         if (ec) {

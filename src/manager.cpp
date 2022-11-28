@@ -127,9 +127,10 @@ void Manager::on_message(const Json::Value &json) {
             return;
         }
 
+        DEBUG_PRINT("Updating location to `" + json["location"].asString() + "`");
         block->set_location(json["location"].asString());
     } else {
-        DEBUG_PRINT("Unrecognized type: `" + type + "`");
+        DEBUG_PRINT("Unrecognized message type: `" + type + "`");
     }
 }
 
@@ -210,4 +211,12 @@ void Manager::send_sync_message() {
     msg["blocks"] = blocks;
 
     _client.send_message_to_all(Utils::to_string(msg));
+}
+
+ostream &operator<<(ostream &os, Manager &manager) {
+    for (int i = 0; i < manager.block_chain.get_block_count(); ++i) {
+        auto *block = manager.block_chain.get_block(i);
+        cout << *block << '\n';
+    }
+    return os;
 }

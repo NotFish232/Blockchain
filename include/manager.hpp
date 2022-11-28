@@ -13,9 +13,9 @@
  */
 class Manager {
 private:
-/**
- * @var no_overwrite whether or not to overwrite rsa keys, defaults to true
-*/
+    /**
+     * @var no_overwrite whether or not to overwrite rsa keys, defaults to true
+     */
     bool no_overwrite;
     Server _server;
     thread server_thread;
@@ -39,6 +39,7 @@ public:
     void send_message(const string &msg);
     void open_connection(const string &url);
     void update_location(const string &location);
+    friend std::ostream &operator<<(std::ostream &, Manager &manager);
 };
 
 #endif
