@@ -40,7 +40,8 @@ int main(int argc, char **argv) {
         manager.open_connection(connection_url);
 
     while (true) {
-        this_thread::sleep_for(chrono::milliseconds(10000));
+        // sleep for a random time betweeen 5 and 10 seconds
+        this_thread::sleep_for(chrono::seconds(rand() % 10 + 5));
 
         string location = random_addresses[rand() % random_addresses.size()]["address"].asString();
         manager.update_location(location);
