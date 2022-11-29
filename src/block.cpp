@@ -16,7 +16,7 @@ Block::~Block() {
         Crypto::free(private_key);
 }
 string Block::get_hash() const {
-    return Crypto::sha256(username + url);
+    return Crypto::sha256(username + url + description + location);
 }
 
 string Block::get_username() const {

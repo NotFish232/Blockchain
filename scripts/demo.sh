@@ -4,8 +4,11 @@ set -e
 
 n=${1:-5}
 
-shift
+if [ $# -ge 1 ]; 
+    then shift; 
+fi
 
+# comment to compile within the docker container
 /bin/bash ./scripts/compile.sh $@
 
 cd config
