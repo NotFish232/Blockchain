@@ -38,8 +38,12 @@ public:
     void run();
     void send_message(const string &msg);
     void open_connection(const string &url);
+    bool close_connection(const string &url);
     void update_location(const string &location);
-    friend std::ostream &operator<<(std::ostream &, Manager &manager);
+    Block *get_block_by_username(const string &username);
+    bool delete_block_by_username(const string &username);
+    void make_new_block(const string &username, const string &url, const string &description);
+    void print_blocks();
 };
 
 #endif

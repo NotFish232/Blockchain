@@ -28,17 +28,25 @@ Block *BlockChain::get_block(int index) {
     return index < blocks.size() ? &blocks[index] : nullptr;
 }
 
-Block *BlockChain::get_block_by_username(const string &username) {
-    for (auto &block: blocks) {
-        if (block.get_username() == username) {
-            return &block;
-        }
-    }
-    return nullptr;
+Block *BlockChain::get_block(const function<bool(const Block &block)> &callable) {
+    auto it = find_if(blocks.begin(), blocks.end(), callable);
+    return it != blocks.end() ? &(*it) : nullptr;
+}
+
+vector<Block> &BlockChain::get_blocks() {
+    return blocks;
+}
+
+bool BlockChain::delete_block(const function<bool(const Block &block)> &callable) {
+    auto it = find_if(blocks.begin(), blocks.end(), callable);
+    if (it == blocks.end())
+        return false;
+    blocks.erase(it);
+    return true;
 }
 
 ostream &operator<<(ostream &os, const BlockChain &block_chain) {
-    for (auto block : block_chain.blocks) {
+    for (const auto &block : block_chain.blocks) {
         os << block << '\n';
     }
     return os;

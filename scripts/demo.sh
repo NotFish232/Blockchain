@@ -23,16 +23,8 @@ fi
 
 cleanup() {
     echo "Cleaning up docker containers"
-    for i in `seq 1 $n`; do
-        if [[ $(docker container ls -aqf name="user${i}_container") != "" ]]; then
-            if [[ $(docker container ls -qf name="user${i}_container") != "" ]]; then 
-                docker container stop "user${i}_container" > /dev/null
-                echo " - Stopped container \`user${i}_container\`"
-            fi
-            docker container rm "user${i}_container" > /dev/null
-            echo " - Removed container \`user${i}_container\`"
-        fi
-    done
+    docker container stop $(docker container ls -qf name="user.*_container") > /dev/null
+    docker container rm $(docker container ls -aqf name="user.*_container") > /dev/null
 }   
 
 trap cleanup EXIT
@@ -65,4 +57,4 @@ for i in `seq 1 $n`; do
     fi
 done
 
-docker logs --follow "user1_container"
+docker attach "user1_container"

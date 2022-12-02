@@ -18,8 +18,11 @@ public:
     ~Block();
     string get_hash() const;
     string get_username() const;
+    void set_username(const string &username);
     string get_url() const;
+    void set_url(const string &url);
     string get_description() const;
+    void set_description(const string &description);
     string get_location() const;
     void set_location(const string &location);
     string get_str_public() const;

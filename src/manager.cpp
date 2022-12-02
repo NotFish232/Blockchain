@@ -114,7 +114,7 @@ void Manager::on_message(const Json::Value &json) {
 
         string username = json["username"].asString();
 
-        auto *block = block_chain.get_block_by_username(username);
+        auto *block = get_block_by_username(username);
 
         if (block == nullptr) {
             return;
@@ -213,10 +213,24 @@ void Manager::send_sync_message() {
     _client.send_message_to_all(Utils::to_string(msg));
 }
 
-ostream &operator<<(ostream &os, Manager &manager) {
-    for (int i = 0; i < manager.block_chain.get_block_count(); ++i) {
-        auto *block = manager.block_chain.get_block(i);
-        cout << *block << '\n';
-    }
-    return os;
+Block *Manager::get_block_by_username(const string &username) {
+    auto callable = [&username](const Block &block) {
+        return block.get_username() == username;
+    };
+    return block_chain.get_block(callable);
+}
+
+bool Manager::delete_block_by_username(const string &username) {
+    auto callable = [&username](const Block &block) {
+        return block.get_username() == username;
+    };
+    return block_chain.delete_block(callable);
+}
+
+void Manager::make_new_block(const string &username, const string &url, const string &description) {
+    block_chain.add_block(username, url, description);
+}
+
+void Manager::print_blocks() {
+    cout << block_chain;
 }

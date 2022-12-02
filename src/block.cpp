@@ -6,7 +6,8 @@ Block::Block(const std::string &username, const std::string &url, const string &
     this->username = username;
     this->url = url;
     this->description = description;
-    
+    this->location = "None";
+
     public_key = Crypto::import_public_key(username + "_public");
     private_key = Crypto::import_private_key(username + "_private");
 }
@@ -23,12 +24,24 @@ string Block::get_username() const {
     return username;
 }
 
+void Block::set_username(const string &username) {
+    this->username = username;
+}
+
 string Block::get_url() const {
     return url;
 }
 
+void Block::set_url(const string &url) {
+    this->url = url;
+}
+
 string Block::get_description() const {
     return description;
+}
+
+void Block::set_description(const string &description) {
+    this->description = description;
 }
 
 string Block::get_location() const {
@@ -52,8 +65,9 @@ RSA *Block::get_private() {
 }
 
 ostream &operator<<(ostream &os, const Block &block) {
-    //TODO: actually good description of the block;
-    os << "User: " << block.username << '\n';
-    os << "Url: " << block.url << '\n';
+    os << "Block(username = \"" << block.username;
+    os << "\", url = \"" << block.url;
+    os << "\", location = \"" << block.location;
+    os << "\", description = \"" << block.description << "\")";
     return os;
 }
