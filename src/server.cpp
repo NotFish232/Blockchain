@@ -28,11 +28,21 @@ Server::~Server() {
 void Server::on_open(websocketpp::connection_hdl hdl) {
     DEBUG_PRINT("Opened connection on port " + to_string(port));
     connections.insert(hdl);
+
+    connection_callback();
 }
 
 void Server::on_close(websocketpp::connection_hdl hdl) {
     DEBUG_PRINT("Closed connection on port " + to_string(port));
     connections.erase(hdl);
+
+    auto con = _server.get_con_from_hdl(hdl);
+
+    const string &close_reason = con->get_remote_close_reason();
+
+    DEBUG_PRINT("Close reason " + close_reason);
+
+    disconnection_callback(close_reason);
 }
 
 void Server::on_fail(websocketpp::connection_hdl hdl) {
@@ -54,6 +64,14 @@ void Server::run() {
     _server.run();
 }
 
-void Server::set_message_callback(const msg_func &callback) {
+void Server::set_message_callback(const function<void(const Json::Value &)> &callback) {
     message_callback = callback;
+}
+
+void Server::set_connection_callback(const function<void()> &callback) {
+    connection_callback = callback;
+}
+
+void Server::set_disconnection_callback(const function<void(const string &)> &callback) {
+    disconnection_callback = callback;
 }

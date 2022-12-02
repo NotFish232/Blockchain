@@ -27,8 +27,10 @@ private:
     void send_initial_message(const string &url);
     void send_sync_message();
     void on_message(const Json::Value &message);
-    void on_connect(const string &url);
-    void on_disconnect(const string &url);
+    void client_on_connect(const string &url);
+    void client_on_disconnect(const string &url);
+    void server_on_connect();
+    void server_on_disconnect(const string &reason);
     void load_config(const string &path = "./config/");
     void save_config(const string &path = "./config/");
 
@@ -44,6 +46,7 @@ public:
     bool delete_block_by_username(const string &username);
     void make_new_block(const string &username, const string &url, const string &description);
     void print_blocks();
+    void list_connections();
 };
 
 #endif

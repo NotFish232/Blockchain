@@ -1,7 +1,7 @@
 #include "include/manager.hpp"
 #include <random>
 
-#define USER "user1"
+#define USERNAME "user1"
 #define URL "ws://localhost:8080/"
 #define CONNECTION_URL "ws://localhost:8080/"
 
@@ -18,13 +18,13 @@ vector<string> split(const string &s, char delim) {
     return parts;
 }
 
-void run_interactive(Manager &manager) {
+void run_interactive(Manager &manager, const string &username) {
     cout << "\nInteractive shell for managing your node \n";
     cout << "run \"help\" for a list of possible commands \n";
     string input;
     vector<string> arguments;
     while (true) {
-        cout << ">> ";
+        cout << "(" << username << ") >> ";
         getline(cin, input);
         arguments = split(input, ' ');
 
@@ -43,7 +43,6 @@ void run_interactive(Manager &manager) {
             cout << "   blocks       Manage blocks \n";
             cout << "   connections  Manages connections \n";
             cout << "   keys         Manager RSA keys \n";
-            cout << "   location     Update location of block \n";
             cout << "   send         Send message to blocks \n";
             cout << "   help         Shows this help message \n";
             cout << "   exit         Quits program and closes connections \n";
@@ -133,7 +132,7 @@ void run_interactive(Manager &manager) {
                 }
 
             } else {
-                cout << "Invalid command \"" + sub_command + "\" \n";
+                cout << "Invalid command \"blocks" + sub_command + "\" \n";
                 cout << "For information on commands, run \"blocks help\" \n";
             }
 
@@ -144,9 +143,52 @@ void run_interactive(Manager &manager) {
                 continue;
             }
 
-        } else if (command == "keys") {
+            string sub_command = arguments[1];
 
-        } else if (command == "location") {
+            if (sub_command == "help") {
+                if (arguments.size() != 2) {
+                    cout << "Command \"connections help\" accepts no arguments \n";
+                    continue;
+                }
+                cout << "Commands: \n";
+                cout << "   list         Lists all connections \n";
+                cout << "   open         Creates a new connection \n";
+                cout << "   close        Ends a connection \n";
+                cout << "   help         Shows this help message \n";
+            } else if (sub_command == "list") {
+                if (arguments.size() != 2) {
+                    cout << "Command \"connections list\" accepts no arguments \n";
+                    continue;
+                }
+                manager.list_connections();
+            } else if (sub_command == "open") {
+                if (arguments.size() != 3) {
+                    cout << "Command \"connections open\" requires an argument \n";
+                    cout << "Usage:  \"connections open URL\" \n";
+                    continue;
+                }
+                manager.open_connection(arguments[2]);
+                cout << "Connecting to " << arguments[2] << '\n';
+                
+            } else if (sub_command == "close") {
+                if (arguments.size() != 3) {
+                    cout << "Command \"connections close\" requires an argument \n";
+                    cout << "Usage: \"connections close URL\" \n";
+                    continue;
+                }
+                bool result = manager.close_connection(arguments[2]);
+                if (result) {
+                    cout << "Successfully closed connection with " << arguments[2] << '\n';
+                } else {
+                    cout << "Failed to close connection with " << arguments[2] << '\n';
+                }
+
+            } else {
+                cout << "Invalid command \"connections " + sub_command + "\" \n";
+                cout << "For information on commands, run \"blocks help\" \n";
+            }
+
+        } else if (command == "keys") {
 
         } else if (command == "send") {
 
@@ -164,20 +206,20 @@ void run_interactive(Manager &manager) {
 }
 
 int main(int argc, char **argv) {
-    string user = USER;
+    string username = USERNAME;
     string url = URL;
     string connection_url = CONNECTION_URL;
     if (argc >= 4) {
-        user = argv[1];
+        username = argv[1];
         url = argv[2];
         connection_url = argv[3];
     }
 
-    DEBUG_PRINT("Starting block chain ( Username - " + user + ", Url - " + url + ", Connection url - " + connection_url + " )");
+    DEBUG_PRINT("Starting block chain ( Username - " + username + ", Url - " + url + ", Connection url - " + connection_url + " )");
 
     RSA *keypair = Crypto::generate_rsa_keys();
-    Crypto::export_private_key(keypair, user + "_private");
-    Crypto::export_public_key(keypair, user + "_public");
+    Crypto::export_private_key(keypair, username + "_private");
+    Crypto::export_public_key(keypair, username + "_public");
     Crypto::free(keypair);
 
     Json::Value random_foods = Utils::load_json("random-foods");
@@ -191,7 +233,7 @@ int main(int argc, char **argv) {
 
     Json::Value food = random_foods[static_cast<int>(food_dist(rng))];
 
-    Block block(user, url, food.asString());
+    Block block(username, url, food.asString());
 
     Manager manager(&block);
     manager.run();
@@ -199,8 +241,8 @@ int main(int argc, char **argv) {
     if (url != connection_url)
         manager.open_connection(connection_url);
 
-    if (user == "user1") {
-        run_interactive(manager);
+    if (username == "user1") {
+        run_interactive(manager, username);
     } else {
         while (true) {
             // sleep for a random time up to 30 seconds

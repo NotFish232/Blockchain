@@ -7,10 +7,13 @@ Manager::Manager(const Block *block, bool no_overwrite)
     // remove port from url
 
     this->no_overwrite = no_overwrite;
-    // block 0 in the block chain must be you
+
     _server.set_message_callback(bind(&Manager::on_message, this, _1));
-    _client.set_connection_callback(bind(&Manager::on_connect, this, _1));
-    _client.set_disconnection_callback(bind(&Manager::on_disconnect, this, _1));
+    _server.set_connection_callback(bind(&Manager::server_on_connect, this));
+    _server.set_disconnection_callback(bind(&Manager::server_on_disconnect, this, _1));
+
+    _client.set_connection_callback(bind(&Manager::client_on_connect, this, _1));
+    _client.set_disconnection_callback(bind(&Manager::client_on_disconnect, this, _1));
 
     block_chain.add_block(block->get_username(), block->get_url(), block->get_description());
 }
@@ -135,7 +138,7 @@ void Manager::on_message(const Json::Value &json) {
 }
 
 void Manager::send_message(const string &message) {
-    auto *block = block_chain.get_block(0);
+    auto *block = block_chain.get_root();
     Json::Value msg;
     msg["type"] = "message";
     msg["username"] = block->get_username();
@@ -150,8 +153,12 @@ void Manager::open_connection(const string &url) {
     client_thread.detach();
 }
 
+bool Manager::close_connection(const string &url) {
+    return _client.close_connection(url, block_chain.get_root()->get_url());
+}
+
 void Manager::update_location(const string &location) {
-    auto *block = block_chain.get_block(0);
+    auto *block = block_chain.get_root();
     block->set_location(location);
 
     Json::Value msg;
@@ -163,16 +170,27 @@ void Manager::update_location(const string &location) {
     _client.send_message_to_all(Utils::to_string(msg));
 }
 
-void Manager::on_connect(const string &url) {
+void Manager::client_on_connect(const string &url) {
     send_initial_message(url);
 }
 
-void Manager::on_disconnect(const string &url) {
+void Manager::client_on_disconnect(const string &url) {
+}
+
+void Manager::server_on_connect() {
+}
+
+void Manager::server_on_disconnect(const string &reason) {
+    // reason should be url that disconnected
+    // disconnects from that url
+    // impossible for the server to distinguish urls and close one
+    // so the client has to close all of them
+    close_connection(reason);
 }
 
 void Manager::send_initial_message(const string &url) {
     // initial message to add yourself to the blockchain
-    auto *block = block_chain.get_block(0);
+    auto *block = block_chain.get_root();
 
     Json::Value msg;
     msg["type"] = "initialize_block";
@@ -233,4 +251,11 @@ void Manager::make_new_block(const string &username, const string &url, const st
 
 void Manager::print_blocks() {
     cout << block_chain;
+}
+
+void Manager::list_connections() {
+    vector<string> connection_urls = _client.get_connection_urls();
+    for (const string &url : connection_urls) {
+        cout << "Connected to " << url << '\n';
+    }
 }

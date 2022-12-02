@@ -5,8 +5,8 @@ if [ ! -f ./bin/main.out ]; then
 fi
 
 # if any env variable isn't set, run without args
-if [[ -z $BC_user || -z $BC_url || -z $BC_connection_url ]]; then
+if [[ -z $BC_username || -z $BC_url || -z $BC_connection_url ]]; then
     ./bin/main.out
 else
-    ./bin/main.out $BC_user $BC_url $BC_connection_url 
+    ./bin/main.out $BC_username $BC_url $BC_connection_url 
 fi

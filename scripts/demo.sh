@@ -42,7 +42,7 @@ for i in `seq 1 $n`; do
     if [[ $(docker container ls -aqf name="${user}_container") == "" ]]; then
         docker run -it -d \
             --name "${user}_container" \
-            --env "BC_user=$user" \
+            --env "BC_username=$user" \
             --env "BC_url=ws://${user}_container:$port/" \
             --env "BC_connection_url=ws://user1_container:8001/" \
             --network "blockchain_net" \

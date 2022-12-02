@@ -24,7 +24,7 @@ void Client::open_connection(const string &url) {
         if (url == get_url_from_hdl(hdl))
             return;
     }
-    DEBUG_PRINT("Trying to open a connection with url " + url);
+    DEBUG_PRINT("Opening a connection with url " + url);
     error_code ec;
     client::connection_ptr con = _client.get_connection(url, ec);
     if (!ec) {
@@ -35,12 +35,38 @@ void Client::open_connection(const string &url) {
     }
 }
 
+bool Client::close_connection(const string &url, const string &msg) {
+    auto callable = [&](const auto &hdl) {
+        return url == get_url_from_hdl(hdl);
+    };
+    auto it = find_if(connections.begin(), connections.end(), callable);
+    if (it == connections.end())
+        return false;
+
+    DEBUG_PRINT("Closing connection with " + url);
+    _client.pause_reading(*it);
+    _client.close(*it, websocketpp::close::status::normal, msg);
+    connections.erase(it);
+    return true;
+}
+
+vector<string> Client::get_connection_urls() {
+    vector<string> connection_urls;
+    for (const auto &hdl : connections) {
+        connection_urls.push_back(get_url_from_hdl(hdl));
+    }
+    return connection_urls;
+}
+
 void Client::send_message_to_all(const string &msg) {
+
+    if (connections.size() == 0)
+        return;
 
     // get string with all urls seperated by commas
     // eliminate excessive debug prints by not printing new message for each url
     string urls = "";
-    for (const auto &hdl: connections) {
+    for (const auto &hdl : connections) {
         urls += get_url_from_hdl(hdl) + ", ";
     }
     urls = urls.substr(0, urls.length() - 2);
@@ -94,10 +120,10 @@ void Client::run() {
     _client.run();
 }
 
-void Client::set_connection_callback(const con_func &callback) {
+void Client::set_connection_callback(const function<void(const string &)> &callback) {
     connection_callback = callback;
 }
 
-void Client::set_disconnection_callback(const con_func &callback) {
+void Client::set_disconnection_callback(const function<void(const string &)> &callback) {
     disconnection_callback = callback;
 }

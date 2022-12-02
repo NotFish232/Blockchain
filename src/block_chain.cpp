@@ -24,6 +24,10 @@ void BlockChain::add_block(const string &username, const string &url, const stri
     DEBUG_PRINT("Added block to block chain, with username `" + username + "`");
 }
 
+Block *BlockChain::get_root() {
+    return blocks.size() > 0 ? get_block(0): nullptr;
+}
+
 Block *BlockChain::get_block(int index) {
     return index < blocks.size() ? &blocks[index] : nullptr;
 }

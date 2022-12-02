@@ -10,7 +10,6 @@
 
 #define WEBSOCKETPP_STRICT_MASKING
 
-typedef std::function<void(const string &)> con_func;
 typedef websocketpp::client<websocketpp::config::asio> client;
 typedef websocketpp::config::asio::message_type::ptr message_ptr;
 typedef std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> con_set;
@@ -22,7 +21,7 @@ class Client {
 private:
     client _client;
     con_set connections;
-    con_func connection_callback, disconnection_callback;
+    std::function<void(const string &)> connection_callback, disconnection_callback;
     void on_open(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);
     void on_fail(websocketpp::connection_hdl hdl);
@@ -37,10 +36,12 @@ public:
      * @param url url to try and connect o
      */
     void open_connection(const string &url);
+    bool close_connection(const string &url, const string &msg = "");
+    std::vector<string> get_connection_urls();
     void send_message_to_all(const string &msg);
     void send_message(const string &msg, const string &url);
-    void set_connection_callback(const con_func &callback);
-    void set_disconnection_callback(const con_func &callback);
+    void set_connection_callback(const std::function<void(const string &)> &callback);
+    void set_disconnection_callback(const std::function <void(const string &)> &callback);
     void run();
 };
 

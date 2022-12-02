@@ -2,6 +2,7 @@
 #define UTILS_HPP
 
 #include <fstream>
+#include <functional>
 #include <jsoncpp/json/json.h>
 #include <sstream>
 #include <sys/stat.h>

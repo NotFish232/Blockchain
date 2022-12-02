@@ -11,7 +11,6 @@
 #define ASIO_STANDALONE
 #define WEBSOCKETPP_STRICT_MASKING
 
-typedef std::function<void(const Json::Value &)> msg_func;
 typedef websocketpp::server<websocketpp::config::asio> server;
 typedef std::set<websocketpp::connection_hdl, std::owner_less<websocketpp::connection_hdl>> con_set;
 
@@ -22,9 +21,11 @@ class Server {
 private:
     server _server;
     con_set connections;
-    msg_func message_callback;
+    std::function<void(const Json::Value &)> message_callback;
+    std::function<void()> connection_callback;
+    std::function<void(const string &)> disconnection_callback;
     int port;
-
+    
     void on_open(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);
     void on_fail(websocketpp::connection_hdl hdl);
@@ -33,7 +34,9 @@ private:
 public:
     Server(int port);
     ~Server();
-    void set_message_callback(const msg_func &callback);
+    void set_message_callback(const std::function<void(const Json::Value &)> &callback);
+    void set_connection_callback(const std::function<void()> &callback);
+    void set_disconnection_callback(const std::function<void(const string &)> &callback);
     void run();
 };
 

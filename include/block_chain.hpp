@@ -18,6 +18,7 @@ public:
     bool block_exists(const string &username) const;
     int get_block_count() const;
     void add_block(const string &username, const string &url, const string &description);
+    Block *get_root();
     Block *get_block(int index);
     Block *get_block(const std::function<bool(const Block &block)> &callable);
     bool delete_block(const std::function<bool(const Block &block)> &callable);
